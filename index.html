@@ -476,7 +476,7 @@ function renderG(selectedGroup){
         gms.forEach(function(g){
           var dn=g.finished==='TRUE',lv2=g.time_elapsed==='inprogress'||g.time_elapsed==='halftime';
           var hF=tf(g.home_team_id),aF=tf(g.away_team_id);
-          h+='<div class="mc" style="margin-bottom:8px"><div class="mm">';
+          h+='<div class="mc" data-mid="'+g.id+'" style="margin-bottom:8px;cursor:pointer"><div class="mm">';
           h+='<span style="font-size:10px;color:var(--muted)">MD'+g.matchday+' &bull; '+fd(g.local_date)+'</span>';
           if(lv2)h+='<span class="slv"><span class="ldot" style="display:block"></span>AO VIVO</span>';
           else if(dn)h+='<span class="sdn">✓ Encerrado</span>';
