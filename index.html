@@ -12,14 +12,28 @@
 :root{--navy:#131921;--navy2:#1e2832;--navy3:#232f3e;--orange:#ff9900;--green:#00a650;--red:#cc0c39;--blue:#00a8e1;--text:#e8ecef;--muted:#8b96a3;--card:#1e2832;--border:#2d3a4a}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{background:var(--navy);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:14px;min-height:100vh;overflow-x:hidden}
-.hdr{background:var(--navy);border-bottom:2px solid var(--orange);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-.hlogo{display:flex;align-items:center;gap:8px}
-.htitle{font-size:16px;font-weight:700;color:var(--orange)}
-.hsub{font-size:10px;color:var(--muted)}
-.bnotif{background:var(--navy3);border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:6px;font-size:11px;cursor:pointer}
-.bnotif.on{background:var(--orange);color:#000;border-color:var(--orange)}
-.ldot{width:8px;height:8px;background:var(--red);border-radius:50%;animation:pulse 1.2s infinite;display:none}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.hdr{position:sticky;top:0;z-index:100;background:linear-gradient(135deg,#0d1b2a 0%,#1a2a1a 40%,#1a1500 100%);border-bottom:3px solid var(--orange);overflow:hidden}
+.hdr::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(255,153,0,.03) 60px,rgba(255,153,0,.03) 61px),repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(255,153,0,.03) 60px,rgba(255,153,0,.03) 61px);pointer-events:none}
+.hdr-inner{position:relative;padding:14px 16px 10px;display:flex;flex-direction:column;gap:10px}
+.hdr-top{display:flex;align-items:center;justify-content:space-between}
+.hdr-left{display:flex;align-items:center;gap:10px}
+.hdr-ball{font-size:28px;animation:spin3d 8s linear infinite;display:inline-block;filter:drop-shadow(0 0 8px rgba(255,153,0,.6))}
+@keyframes spin3d{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.hdr-titles{display:flex;flex-direction:column;gap:2px}
+.htitle{font-size:18px;font-weight:900;letter-spacing:.5px;background:linear-gradient(90deg,#ff9900,#ffcc44,#ff9900);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shine 3s linear infinite}
+@keyframes shine{0%{background-position:0%}100%{background-position:200%}}
+.hsub{font-size:10px;color:var(--muted);letter-spacing:.3px}
+.hdr-right{display:flex;align-items:center;gap:8px}
+.bnotif{background:rgba(255,153,0,.12);border:1px solid rgba(255,153,0,.4);color:var(--orange);padding:7px 11px;border-radius:8px;font-size:11px;cursor:pointer;font-weight:600;transition:all .25s;white-space:nowrap}
+.bnotif:active{transform:scale(.95)}
+.bnotif.on{background:var(--orange);color:#000;border-color:var(--orange);box-shadow:0 0 12px rgba(255,153,0,.5)}
+.ldot{width:8px;height:8px;background:var(--red);border-radius:50%;animation:pulse 1.2s infinite;display:none;box-shadow:0 0 6px var(--red)}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.hdr-strip{display:flex;align-items:center;justify-content:space-between;padding:0 2px 2px;gap:8px}
+.hdr-author{font-size:11px;font-weight:700;color:rgba(255,153,0,.8);letter-spacing:.5px;display:flex;align-items:center;gap:5px}
+.hdr-author::before{content:'';display:inline-block;width:18px;height:2px;background:var(--orange);border-radius:2px}
+.hdr-flags{display:flex;align-items:center;gap:6px;font-size:13px}
+.hdr-date-badge{background:rgba(255,153,0,.15);border:1px solid rgba(255,153,0,.3);border-radius:6px;padding:3px 8px;font-size:10px;color:var(--orange);font-weight:600;white-space:nowrap}
 .tabs{background:var(--navy2);display:flex;overflow-x:auto;border-bottom:1px solid var(--border);scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
 .tab{padding:11px 16px;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;flex-shrink:0}
@@ -104,13 +118,27 @@ body{background:var(--navy);color:var(--text);font-family:-apple-system,BlinkMac
 </head>
 <body>
 <div class="hdr">
-  <div class="hlogo">
-    <span style="font-size:22px">⚽</span>
-    <div><div class="htitle">Copa do Mundo 2026</div><div class="hsub">EUA &bull; México &bull; Canadá &bull; 11/Jun–19/Jul</div></div>
-  </div>
-  <div style="display:flex;align-items:center;gap:8px">
-    <div class="ldot" id="liveDot"></div>
-    <button class="bnotif" id="btnNotif" onclick="toggleNotif()">🔔 Gols</button>
+  <div class="hdr-inner">
+    <div class="hdr-top">
+      <div class="hdr-left">
+        <span class="hdr-ball">&#x26BD;</span>
+        <div class="hdr-titles">
+          <div class="htitle">COPA DO MUNDO 2026</div>
+          <div class="hsub">&#127482;&#127480; EUA &nbsp;&bull;&nbsp; &#127474;&#127485; M&eacute;xico &nbsp;&bull;&nbsp; &#127464;&#127462; Canad&aacute; &nbsp;&bull;&nbsp; 11 Jun &ndash; 19 Jul</div>
+        </div>
+      </div>
+      <div class="hdr-right">
+        <div class="ldot" id="liveDot"></div>
+        <button class="bnotif" id="btnNotif" onclick="toggleNotif()">&#128276; Gols</button>
+      </div>
+    </div>
+    <div class="hdr-strip">
+      <div class="hdr-author">by Adriano Vieira</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span id="liveMatchBadge" style="display:none;background:rgba(204,12,57,.2);border:1px solid var(--red);border-radius:6px;padding:3px 8px;font-size:10px;color:var(--red);font-weight:700">&#11044; AO VIVO</span>
+        <div class="hdr-date-badge" id="hdrClock">&#9201; --:--</div>
+      </div>
+    </div>
   </div>
 </div>
 <div class="rbar">
@@ -447,6 +475,36 @@ function renderI(){
   h+='<div>· <span class="im">Sede:</span> 🇺🇸 EUA · 🇲🇽 México · 🇨🇦 Canadá</div>';
   h+='</div></div>';
   document.getElementById('iContent').innerHTML=h;
+}
+
+// Live clock
+setInterval(function(){
+  var n=new Date();
+  var cl=document.getElementById('hdrClock');
+  if(cl)cl.textContent='⏱ '+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');
+},1000);
+// Update live badge
+function updateLiveBadge(){
+  var b=document.getElementById('liveMatchBadge');
+  if(!b)return;
+  var live=S.M.some(function(g){return g.time_elapsed==='inprogress'||g.time_elapsed==='halftime';});
+  b.style.display=live?'inline-block':'none';
+  document.getElementById('liveDot').style.display=live?'block':'none';
+}
+
+// Live clock
+setInterval(function(){
+  var n=new Date();
+  var cl=document.getElementById('hdrClock');
+  if(cl)cl.textContent='⏱ '+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');
+},1000);
+// Update live badge
+function updateLiveBadge(){
+  var b=document.getElementById('liveMatchBadge');
+  if(!b)return;
+  var live=S.M.some(function(g){return g.time_elapsed==='inprogress'||g.time_elapsed==='halftime';});
+  b.style.display=live?'inline-block':'none';
+  document.getElementById('liveDot').style.display=live?'block':'none';
 }
 setInterval(loadAll,60000);
 loadAll();
