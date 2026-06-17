@@ -285,7 +285,17 @@ function today(d){
 }
 function parseSc(s){
   if(!s||s==='null')return [];
-  return s.replace(/^\{"?/,'').replace(/"?\}$/,'').split('","').filter(function(x){return x&&x!=='null';});
+  // Strip outer { } with or without quotes, then split
+  var c=s.replace(/^\{"|"\}$/g,'').replace(/^\{/,'').replace(/\}$/,'');
+  return c.split('","').map(function(x){return x.replace(/^"|"$/g,'');}).filter(function(x){return x&&x!=='null';});
+}
+function extractName(s){
+  if(!s)return null;
+  if(/\(OG\)/i.test(s))return null;              // pula gols contra
+  return s
+    .replace(/\s+\d+[^\s]*$/,'')                 // remove tempo do fim (27', 45'+5', 90+6' etc)
+    .replace(/\s*\(p\)/ig,'')                    // marcador de pênalti
+    .trim()||null;
 }
 function renderG(selectedGroup){
   if(selectedGroup===undefined)selectedGroup=window._selGroup||'Todos';
@@ -414,8 +424,8 @@ function renderA(){
   S.M.forEach(function(g){
     var proc=function(sc,tid,fb){
       parseSc(sc).forEach(function(s){
-        var nm=s.replace(/\s+\d+'/g,'').replace(/ \(p\)/ig,'').replace(/ \(og\)/ig,'').trim();
-        if(!nm||nm==='null')return;
+        var nm=extractName(s);
+        if(!nm||nm==='null'||nm.length<2)return;
         var k=nm+'_'+tid;
         if(!sm[k])sm[k]={name:nm,team:tn(tid,fb),flag:tf(tid),goals:0};
         sm[k].goals++;
@@ -434,7 +444,7 @@ function renderA(){
   if(!list.length){h+='<div style="text-align:center;padding:40px;color:var(--muted)">Aguardando gols...</div>';}
   else{
     h+='<div class="tcard"><div class="thdr">🏅 Artilharia — Copa 2026</div>';
-    list.slice(0,30).forEach(function(p,i){
+    list.forEach(function(p,i){
       var rc=i===0?'g':i===1?'s':i===2?'b':'';
       h+='<div class="tr2"><div class="trk '+rc+'">'+(i+1)+'</div><div class="ti">';
       h+='<div class="tn" style="display:flex;align-items:center;gap:6px">';
