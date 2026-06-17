@@ -804,7 +804,7 @@ function renderVideoStrip(videos){
     var thumb=v.thumbnail||'';
     var ttl=(v.headline||'Vídeo').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     return '<div class="vid-card" onclick="playVideo('+i+')">'
-      +(thumb?'<img class="vid-card-img" src="'+thumb+'" onerror="this.style.display='none'" alt="">':'<div class="vid-card-img"></div>')
+      +(thumb?'<img class="vid-card-img" src="'+thumb+'" onerror="this.style.opacity=0" alt="">':'<div class="vid-card-img"></div>')
       +'<div class="vid-card-ttl">'+ttl+'</div>'
       +(dur?'<div class="vid-card-dur">'+dur+'</div>':'')
       +'</div>';
