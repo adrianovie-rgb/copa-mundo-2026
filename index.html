@@ -912,16 +912,40 @@ function renderChat(d,first){
       var icon=chatIcon(txt);
       var playBtn='';
       if(cls==='cb-goal'){
-        // Extract scorer surname → match against video headlines
-        var m=txt.match(/([A-ZÁÀÂÃÉÊÍÓÔÕÚÜÇ][a-záàâãéêíóôõúüç]+(?:[\s\-][A-ZÁÀÂÃÉÊÍÓÔÕÚÜÇ][a-záàâãéêíóôõúüç]+)*)\s*\(/);
-        if(m){
-          var parts=m[1].trim().split(/[\s\-]+/);
-          var surname=parts[parts.length-1].toLowerCase();
-          var vids=window._matchVideos||[];
-          var vi=vids.findIndex(function(v){
-            return v.headline&&v.headline.toLowerCase().includes(surname);
-          });
-          if(vi>=0)playBtn='<button class="cb-play" data-vi="'+vi+'">▶ Ver gol</button>';
+        var vids=window._matchVideos||[];
+        if(vids.length){
+          // 1. Extract scorer name tokens from commentary
+          var scorerMatch=txt.match(/([A-Za-záàâãéêíóôõúüçñÁÀÂÃÉÊÍÓÔÕÚÜÇÑ][a-záàâãéêíóôõúüçñ]+(?:[\s\-][A-Za-záàâãéêíóôõúüçñÁÀÂÃÉÊÍÓÔÕÚÜÇÑ][a-záàâãéêíóôõúüçñ]+)*)\s*\(/);
+          var tokens=[];
+          if(scorerMatch){
+            tokens=scorerMatch[1].trim().toLowerCase().split(/[\s\-]+/).filter(function(t){return t.length>3;});
+          }
+          var vi=-1;
+          // 2. First pass: match by name AND short duration (real goal clip)
+          if(tokens.length){
+            vi=vids.findIndex(function(v){
+              var dur=v.duration||999;
+              var hl=(v.headline||'').toLowerCase();
+              var desc=(v.description||'').toLowerCase();
+              var hasName=tokens.some(function(t){return hl.includes(t)||desc.includes(t);});
+              return hasName&&dur<120;
+            });
+          }
+          // 3. Second pass: match by name in headline regardless of duration (but exclude very long highlights >240s)
+          if(vi<0&&tokens.length){
+            vi=vids.findIndex(function(v){
+              var dur=v.duration||999;
+              var hl=(v.headline||'').toLowerCase();
+              return tokens.some(function(t){return hl.includes(t);})&&dur<240;
+            });
+          }
+          // 4. If found a clip: show goal button; else show highlights button (video[0])
+          if(vi>=0){
+            playBtn='<button class="cb-play" data-vi="'+vi+'">▶ Ver gol</button>';
+          }else if(vids[0]){
+            // No individual clip — offer highlights reel
+            playBtn='<button class="cb-play" data-vi="0" style="opacity:.65">▶ Highlights</button>';
+          }
         }
       }
       el.innerHTML='<div class="cb-time">'+time+'</div><div class="cb-bub">'+icon+' '+txt+(playBtn?'<br>'+playBtn:'')+'</div>';
