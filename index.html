@@ -114,6 +114,24 @@ body{background:var(--navy);color:var(--text);font-family:-apple-system,BlinkMac
 .spin{width:30px;height:30px;border:3px solid var(--border);border-top-color:var(--orange);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
 @keyframes spin{to{transform:rotate(360deg)}}
 .lod{text-align:center;padding:40px 20px;color:var(--muted)}
+.gt th,.gt td{padding:9px 6px}
+.gt td:first-child,.gt th:first-child{padding-left:12px;min-width:120px}
+.mc{border-radius:12px}
+.mb{gap:6px}
+.mfl{width:36px;height:25px}
+.mn{font-size:12px;line-height:1.2;max-width:80px}
+.kpi{border-radius:12px;padding:12px 12px}
+.kpi-v{font-size:22px}
+.fbar{padding-bottom:4px}
+.fb{min-height:36px;display:flex;align-items:center}
+
+.gchips{display:flex;gap:8px;overflow-x:auto;padding:0 0 10px;margin-bottom:4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.gchips::-webkit-scrollbar{display:none}
+.gchip{min-width:44px;min-height:40px;padding:0 12px;border-radius:22px;border:1.5px solid var(--border);background:var(--navy2);color:var(--muted);font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;position:relative;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:4px}
+.gchip:active{transform:scale(.94)}
+.gchip-on{background:var(--orange);color:#000;border-color:var(--orange);box-shadow:0 2px 12px rgba(255,153,0,.35)}
+.gchip-live::after{content:'';display:inline-block;width:6px;height:6px;background:var(--red);border-radius:50%;animation:pulse 1s infinite;position:absolute;top:6px;right:6px}
+
 </style>
 </head>
 <body>
@@ -269,32 +287,80 @@ function parseSc(s){
   if(!s||s==='null')return [];
   return s.replace(/^\{"?/,'').replace(/"?\}$/,'').split('","').filter(function(x){return x&&x!=='null';});
 }
-function renderG(){
+function renderG(selectedGroup){
+  if(selectedGroup===undefined)selectedGroup=window._selGroup||'Todos';
+  window._selGroup=selectedGroup;
   var tg=0,tj=0;
   S.M.forEach(function(g){if(g.finished==='TRUE'){tg+=parseInt(g.home_score||0)+parseInt(g.away_score||0);tj++;}});
   var gpg=tj?Math.round(tg/tj*100)/100:0;
+  var liveGroups=[];
+  S.M.forEach(function(g){if(g.time_elapsed==='inprogress'||g.time_elapsed==='halftime')liveGroups.push(g.group);});
+
+  // KPI bar
   var h='<div class="krow c3">';
   h+='<div class="kpi"><div class="kpi-l">Grupos</div><div class="kpi-v">12</div><div class="kpi-s">A até L</div></div>';
   h+='<div class="kpi"><div class="kpi-l">Gols</div><div class="kpi-v">'+tg+'</div><div class="kpi-s">'+gpg+'/jogo</div></div>';
   h+='<div class="kpi"><div class="kpi-l">Jogos</div><div class="kpi-v">'+tj+'</div><div class="kpi-s">de 72 na fase</div></div></div>';
-  ['A','B','C','D','E','F','G','H','I','J','K','L'].forEach(function(gn){
+
+  // Group chips
+  h+='<div class="gchips" id="gChips">';
+  var chips=['Todos','A','B','C','D','E','F','G','H','I','J','K','L'];
+  chips.forEach(function(g){
+    var isLive=liveGroups.indexOf(g)>=0;
+    var active=g===selectedGroup?' gchip-on':'';
+    h+='<button class="gchip'+active+'" onclick="renderG(''+g+'')">';
+    h+=g+(isLive?'<span class="gchip-live"></span>':'')+'</button>';
+  });
+  h+='</div>';
+
+  // Tables
+  var groups=['A','B','C','D','E','F','G','H','I','J','K','L'];
+  var show=selectedGroup==='Todos'?groups:[selectedGroup];
+  show.forEach(function(gn){
     var grp=S.G.find(function(g){return g.name===gn;});if(!grp)return;
     var ts=grp.teams.slice().sort(function(a,b){var p=parseInt(b.pts)-parseInt(a.pts);return p||parseInt(b.gd)-parseInt(a.gd);});
-    var lv=S.M.some(function(g){return g.group===gn&&(g.time_elapsed==='inprogress'||g.time_elapsed==='halftime');});
+    var lv=liveGroups.indexOf(gn)>=0;
     h+='<div class="gcard"><div class="gname">GRUPO '+gn+(lv?' <span class="blv">AO VIVO</span>':'')+'</div>';
-    h+='<table class="gt"><thead><tr><th>Seleção</th><th>J</th><th>V</th><th>E</th><th>D</th><th>GP</th><th>GC</th><th>SG</th><th>Pts</th></tr></thead><tbody>';
+    h+='<table class="gt"><thead><tr><th>Seleção</th><th title="Jogos">J</th><th title="Vitórias">V</th><th title="Empates">E</th><th title="Derrotas">D</th><th title="Gols Pró">GP</th><th title="Gols Contra">GC</th><th title="Saldo">SG</th><th title="Pontos">Pts</th></tr></thead><tbody>';
     ts.forEach(function(t,i){
       var ti=S.T[t.team_id]||{name_en:'#'+t.team_id,flag:''};
       h+='<tr class="'+(i<2?'q1':i===2?'q3':'')+'"><td><div class="tc">';
-      if(ti.flag)h+='<img class="tf" src="'+ti.flag+'" alt="" onerror="this.style.display=\'none\'">';
+      if(ti.flag)h+='<img class="tf" src="'+ti.flag+'" alt="" onerror="this.style.display='none'">';
       h+='<span>'+ti.name_en+'</span></div></td>';
       h+='<td>'+t.mp+'</td><td>'+t.w+'</td><td>'+t.d+'</td><td>'+t.l+'</td>';
       h+='<td>'+t.gf+'</td><td>'+t.ga+'</td><td>'+(parseInt(t.gd)>=0?'+':'')+t.gd+'</td><td class="pts">'+t.pts+'</td></tr>';
     });
     h+='</tbody></table></div>';
+    // Mini results for selected single group
+    if(selectedGroup!=='Todos'){
+      var gms=S.M.filter(function(g){return g.group===gn;}).sort(function(a,b){return parseInt(a.matchday)-parseInt(b.matchday)||a.local_date>b.local_date?1:-1;});
+      if(gms.length){
+        h+='<div class="shdr" style="margin-top:14px">Jogos do Grupo '+gn+'</div>';
+        gms.forEach(function(g){
+          var dn=g.finished==='TRUE',lv2=g.time_elapsed==='inprogress'||g.time_elapsed==='halftime';
+          var hF=tf(g.home_team_id),aF=tf(g.away_team_id);
+          h+='<div class="mc" style="margin-bottom:8px"><div class="mm">';
+          h+='<span style="font-size:10px;color:var(--muted)">MD'+g.matchday+' &bull; '+fd(g.local_date)+'</span>';
+          if(lv2)h+='<span class="slv"><span class="ldot" style="display:block"></span>AO VIVO</span>';
+          else if(dn)h+='<span class="sdn">✓ Encerrado</span>';
+          else h+='<span class="ssn">'+(g.local_date?g.local_date.split(' ')[1]:'')+'</span>';
+          h+='</div><div class="mb">';
+          h+='<div class="mt">'+(hF?'<img class="mfl" src="'+hF+'" alt="">':'')+'<div class="mn">'+tn(g.home_team_id,g.home_team_name_en)+'</div></div>';
+          h+='<div class="ms">'+(dn||lv2?'<div class="sn">'+g.home_score+'<span style="color:var(--muted)"> – </span>'+g.away_score+'</div>':'<div class="sv">vs</div>')+'</div>';
+          h+='<div class="mt">'+(aF?'<img class="mfl" src="'+aF+'" alt="">':'')+'<div class="mn">'+tn(g.away_team_id,g.away_team_name_en)+'</div></div>';
+          h+='</div></div>';
+        });
+      }
+    }
   });
-  h+='<div style="padding:8px 0;font-size:10px;color:var(--muted)"><span style="border-left:3px solid var(--green);padding-left:5px;margin-right:10px">Classifica (Top 2)</span><span style="border-left:3px solid var(--blue);padding-left:5px">Pode avançar (3°)</span></div>';
+
+  if(selectedGroup==='Todos'){
+    h+='<div style="padding:8px 0;font-size:10px;color:var(--muted)"><span style="border-left:3px solid var(--green);padding-left:5px;margin-right:10px">Classifica (Top 2)</span><span style="border-left:3px solid var(--blue);padding-left:5px">Pode avançar (3º)</span></div>';
+  }
   document.getElementById('gContent').innerHTML=h;
+  // Scroll selected chip into view
+  var el=document.querySelector('.gchip-on');
+  if(el)el.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'});
 }
 function filt(f,btn){
   S.mf=f;
