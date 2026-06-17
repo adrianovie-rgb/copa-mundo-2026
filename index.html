@@ -526,7 +526,7 @@ function renderM(){
     var hF=tf(g.home_team_id),aF=tf(g.away_team_id);
     var hs=parseSc(g.home_scorers),as=parseSc(g.away_scorers);
     if(S.mf==='all'&&g.group!==lg){h+='<div class="shdr">Grupo '+g.group+'</div>';lg=g.group;}
-    h+='<div class="mc" style="cursor:pointer" onclick="openMatch('+JSON.stringify(g.id)+')"><div class="mm"><span>'+fd(g.local_date)+' · '+g.group+' MD'+g.matchday+'</span>';
+    h+='<div class="mc" data-mid="'+g.id+'" style="cursor:pointer"><div class="mm"><span>'+fd(g.local_date)+' · '+g.group+' MD'+g.matchday+'</span>';
     if(lv)h+='<span class="slv"><span class="ldot" style="display:block"></span>'+g.time_elapsed.toUpperCase()+'</span>';
     else if(dn)h+='<span class="sdn">✓ Encerrado</span>';
     else h+='<span class="ssn">'+(g.local_date?g.local_date.split(' ')[1]:'')+'</span>';
@@ -613,7 +613,7 @@ function renderC(){
         var aN=parseInt(g.away_team_id)>0?tn(g.away_team_id,g.away_team_name_en):'A definir';
         var hF=parseInt(g.home_team_id)>0?tf(g.home_team_id):'';
         var aF=parseInt(g.away_team_id)>0?tf(g.away_team_id):'';
-        h+='<div class="bm" style="cursor:pointer" onclick="openMatch('+JSON.stringify(g.id)+')">'; 
+        h+='<div class="bm" data-mid="'+g.id+'" style="cursor:pointer">'; 
         h+='<div class="bt"><div class="bi">'+(hF?'<img class="bf" src="'+hF+'" alt="">':'')+hN+'</div>';
         h+='<div class="bsc">'+(g.finished==='TRUE'?g.home_score:'')+'</div></div>';
         h+='<div class="bt"><div class="bi">'+(aF?'<img class="bf" src="'+aF+'" alt="">':'')+aN+'</div>';
@@ -845,6 +845,12 @@ function renderChat(d,first){
   }
 }
 // ─────────────────────────────────────────────────────────
+
+// Click delegation for game cards → chat modal
+document.addEventListener('click',function(e){
+  var card=e.target.closest('[data-mid]');
+  if(card)openMatch(card.getAttribute('data-mid'));
+});
 
 loadBaked();loadAll();
 </script>
