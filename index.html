@@ -135,6 +135,37 @@ body{background:var(--navy);color:var(--text);font-family:-apple-system,BlinkMac
 .gchip-on{background:var(--orange);color:#000;border-color:var(--orange);box-shadow:0 2px 12px rgba(255,153,0,.35)}
 .gchip-live::after{content:'';display:inline-block;width:6px;height:6px;background:var(--red);border-radius:50%;animation:pulse 1s infinite;position:absolute;top:6px;right:6px}
 
+
+/* ── Live Chat Modal ── */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:400;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);align-items:flex-end}
+.modal.open{display:flex}
+.msheet{width:100%;height:90vh;display:flex;flex-direction:column;background:#0d1117;border-radius:18px 18px 0 0;overflow:hidden;animation:slideUp .28s ease-out}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.mhead{flex-shrink:0;background:linear-gradient(135deg,#0d1b2a,#1a2a1a);border-bottom:2px solid var(--orange);padding:10px 14px 8px}
+.mhead-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.mhead-close{background:rgba(255,255,255,.1);border:none;color:var(--text);width:30px;height:30px;border-radius:50%;font-size:15px;cursor:pointer;flex-shrink:0}
+.mhead-teams{display:flex;align-items:center;justify-content:center;gap:10px;flex:1}
+.mteam-blk{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;max-width:100px}
+.mteam-blk img{width:40px;height:28px;object-fit:cover;border-radius:3px}
+.mteam-blk span{font-size:10px;font-weight:700;text-align:center;line-height:1.2;color:var(--text)}
+.mscore-blk{display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0}
+.mscore-num{font-size:30px;font-weight:900;color:var(--orange);letter-spacing:2px;line-height:1}
+.mstatus-pill{font-size:10px;font-weight:700;letter-spacing:.5px;padding:2px 8px;border-radius:10px;background:rgba(255,153,0,.15);color:var(--orange)}
+.mstatus-pill.live{background:rgba(204,12,57,.2);color:var(--red);animation:pulse 1.4s infinite}
+.mchat{flex:1;overflow-y:auto;padding:10px 10px 14px;display:flex;flex-direction:column;gap:5px;scroll-behavior:smooth;background:#0d1117}
+.mchat::-webkit-scrollbar{width:4px}.mchat::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.cb{display:flex;align-items:flex-start;gap:7px}
+.cb-time{font-size:9px;color:var(--muted);font-weight:700;min-width:32px;text-align:right;padding-top:5px;flex-shrink:0}
+.cb-bub{background:#1c2840;border-radius:4px 14px 14px 14px;padding:7px 11px;font-size:12px;line-height:1.45;color:#c9d1d9;max-width:calc(100% - 45px)}
+.cb.cb-goal{max-width:100%;margin:5px 0}
+.cb.cb-goal .cb-bub{background:linear-gradient(135deg,rgba(0,166,80,.22),rgba(255,153,0,.14));border:1px solid rgba(0,166,80,.5);border-radius:10px;font-weight:700;font-size:13px;color:#fff;width:100%;text-align:center;padding:11px 14px}
+.cb.cb-yellow .cb-bub{background:rgba(255,200,0,.1);border-left:3px solid #ffc800;border-radius:4px 10px 10px 4px}
+.cb.cb-red .cb-bub{background:rgba(204,12,57,.12);border-left:3px solid var(--red);border-radius:4px 10px 10px 4px}
+.cb.cb-sub .cb-bub{background:rgba(0,168,225,.07);border-left:3px solid var(--blue);border-radius:4px 10px 10px 4px;color:var(--muted);font-size:11px}
+.cb.cb-attempt .cb-bub{color:#7a8490;font-size:11px}
+.cb-sep{align-self:center;background:rgba(255,255,255,.06);border-radius:20px;padding:3px 16px;font-size:10px;color:var(--muted);letter-spacing:.5px;margin:5px 0}
+.mchat-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:10px;color:var(--muted);font-size:12px}
+
 </style>
 </head>
 <body>
@@ -700,105 +731,139 @@ window.addEventListener('pageshow',function(e){
 window.addEventListener('focus',function(){loadAll();});
 
 
-// ── Match Detail Modal ──────────────────────────────────
+// ── Live Chat Modal ─────────────────────────────────────
 var ESPN_SUMMARY='https://site.api.espn.com/apis/site/v2/sports/soccer/FIFA.World/summary?event=';
-var _mTimer=null,_mId=null;
+var _mTimer=null,_mId=null,_mSeq=-1;
 
 function openMatch(id){
-  _mId=id;
+  _mId=id; _mSeq=-1;
   var modal=document.getElementById('matchModal');
   modal.classList.add('open');
   document.body.style.overflow='hidden';
-  document.getElementById('modalContent').innerHTML='<div class="lod"><div class="spin"></div>Carregando...</div>';
-  fetchMatch(id);
+  document.getElementById('mChat').innerHTML='<div class="mchat-loading"><div class="spin"></div>Carregando...</div>';
+  document.getElementById('mheadTeams').innerHTML='';
+  fetchMatch(id,true);
 }
 function closeMatch(){
   document.getElementById('matchModal').classList.remove('open');
   document.body.style.overflow='';
-  _mId=null;
+  _mId=null; _mSeq=-1;
   if(_mTimer){clearInterval(_mTimer);_mTimer=null;}
 }
-function fetchMatch(id){
+function fetchMatch(id,first){
   fetch(ESPN_SUMMARY+id,{cache:'no-cache'})
     .then(function(r){return r.json();})
     .then(function(d){
-      renderMatch(d);
+      renderMatchHead(d);
+      renderChat(d,first);
       var state=d.header.competitions[0].status.type.state;
       if(state==='in'){
-        if(!_mTimer)_mTimer=setInterval(function(){if(_mId===id)fetchMatch(id);},30000);
+        if(!_mTimer)_mTimer=setInterval(function(){if(_mId===id)fetchMatch(id,false);},30000);
       }else{
         if(_mTimer){clearInterval(_mTimer);_mTimer=null;}
       }
     })
     .catch(function(){
-      document.getElementById('modalContent').innerHTML='<div class="lod">Erro ao carregar dados.</div>';
+      document.getElementById('mChat').innerHTML='<div class="mchat-loading">Erro ao carregar.</div>';
     });
 }
-function renderMatch(d){
+
+function renderMatchHead(d){
   var comp=d.header.competitions[0];
   var home=comp.competitors.find(function(c){return c.homeAway==='home';})||comp.competitors[0];
   var away=comp.competitors.find(function(c){return c.homeAway==='away';})||comp.competitors[1];
   var st=comp.status.type;
-  var isLive=st.state==='in';
-  var isHT=st.name==='STATUS_HALFTIME';
-  var isFT=st.completed;
-  var clock=comp.status.displayClock||'';
-  var statusTxt=isLive?(isHT?'Intervalo':clock+"'"):isFT?'Encerrado':'Não iniciado';
-
-  var h='<div class="mhdr2"><div class="mteams2">';
-  // Home
-  h+='<div class="mteam2">';
-  if(home.team.logo)h+='<img class="mteam2-logo" src="'+home.team.logo+'" alt="">';
-  h+='<div class="mteam2-name">'+home.team.displayName+'</div></div>';
-  // Score
-  h+='<div style="display:flex;flex-direction:column;align-items:center">';
-  h+='<div class="mscore2">'+(home.score||'–')+'<span style="color:var(--muted);font-size:24px"> – </span>'+(away.score||'–')+'</div>';
-  h+='<div class="mstatus2">'+(isLive?'<span class="mlive-pill">⬤ AO VIVO</span> ':'')+statusTxt+'</div>';
-  h+='</div>';
-  // Away
-  h+='<div class="mteam2">';
-  if(away.team.logo)h+='<img class="mteam2-logo" src="'+away.team.logo+'" alt="">';
-  h+='<div class="mteam2-name">'+away.team.displayName+'</div></div>';
-  h+='</div></div>';
-
-  // Timeline
-  var evs=d.keyEvents||[];
-  var skip={'kickoff':1,'start-delay':1,'end-delay':1};
-  var rel=evs.filter(function(e){return !skip[e.type.type];});
-  h+='<div class="mtimeline2">';
-  if(!rel.length){
-    h+='<div class="mev mev-notstarted"><span style="color:var(--muted);font-size:13px">Jogo ainda não iniciado</span></div>';
-  }
-  // Show in order (newest last for live feel, oldest first)
-  rel.forEach(function(ev){
-    var typ=ev.type.type;
-    var clk=ev.clock?ev.clock.displayValue:'';
-    var txt=ev.text||ev.type.text||'';
-    if(typ==='halftime'||typ==='start-2nd-half'||typ==='end-regular-time'){
-      h+='<div class="mev ev-sep"><div class="mev-txt">──── '+ev.type.text+' ────</div></div>';
-      return;
-    }
-    var ico=typ==='goal'||typ==='goal---header'?'⚽':typ==='yellow-card'?'🟨':typ==='red-card'?'🟥':typ==='substitution'?'🔄':'•';
-    var cls=(typ==='goal'||typ==='goal---header')?' ev-goal':'';
-    h+='<div class="mev'+cls+'">';
-    h+='<div class="mev-time">'+clk+'</div>';
-    h+='<div class="mev-ico">'+ico+'</div>';
-    h+='<div class="mev-txt">'+txt+'</div>';
-    h+='</div>';
-  });
-  h+='</div>';
-  document.getElementById('modalContent').innerHTML=h;
+  var isLive=st.state==='in',isHT=st.name==='STATUS_HALFTIME',isFT=st.completed;
+  var clk=comp.status.displayClock||'';
+  var stTxt=isLive?(isHT?'INTERVALO':clk+"'"):isFT?'ENCERRADO':'EM BREVE';
+  var pillCls=isLive?' live':'';
+  var h='<div class="mteam-blk">';
+  if(home.team.logo)h+='<img src="'+home.team.logo+'" alt="">';
+  h+='<span>'+home.team.displayName+'</span></div>';
+  h+='<div class="mscore-blk"><div class="mscore-num">'+(home.score||'0')+'<span style="color:var(--muted);font-size:18px"> – </span>'+(away.score||'0')+'</div>';
+  h+='<div class="mstatus-pill'+pillCls+'">'+stTxt+'</div></div>';
+  h+='<div class="mteam-blk">';
+  if(away.team.logo)h+='<img src="'+away.team.logo+'" alt="">';
+  h+='<span>'+away.team.displayName+'</span></div>';
+  document.getElementById('mheadTeams').innerHTML=h;
 }
-// ────────────────────────────────────────────────────────
+
+function chatClass(txt){
+  var t=txt.toLowerCase();
+  if(t.startsWith('goal!'))return 'cb-goal';
+  if(t.includes('yellow card'))return 'cb-yellow';
+  if(t.includes('red card'))return 'cb-red';
+  if(t.startsWith('substitution'))return 'cb-sub';
+  if(t.startsWith('attempt'))return 'cb-attempt';
+  return '';
+}
+function chatIcon(txt){
+  var t=txt.toLowerCase();
+  if(t.startsWith('goal!'))return '⚽';
+  if(t.includes('yellow card'))return '🟨';
+  if(t.includes('red card'))return '🟥';
+  if(t.startsWith('substitution'))return '🔄';
+  if(t.includes('var'))return '📺';
+  if(t.includes('offside'))return '🚩';
+  if(t.includes('penalty')||t.includes('handball'))return '🤚';
+  if(t.includes('corner'))return '🚀';
+  if(t.includes('foul'))return '⚠️';
+  return '💬';
+}
+function isSep(txt){
+  var t=txt.toLowerCase();
+  return t.includes('half begins')||t.includes('half ends')||t.includes('match ends')||t.includes('second half begins');
+}
+
+function renderChat(d,first){
+  var chat=document.getElementById('mChat');
+  var wasBottom=chat.scrollHeight-chat.scrollTop-chat.clientHeight<60;
+  var items=d.commentary||[];
+  var newItems=items.filter(function(c){return c.sequence>_mSeq;});
+  if(!newItems.length&&!first)return;
+  _mSeq=items.length?items[items.length-1].sequence:_mSeq;
+  if(first) chat.innerHTML='';
+  newItems.forEach(function(c){
+    var time=c.time&&c.time.displayValue?c.time.displayValue:'';
+    var txt=c.text||'';
+    if(!txt)return;
+    var el=document.createElement('div');
+    if(isSep(txt)){
+      el.className='cb-sep';
+      el.textContent='── '+txt+' ──';
+    } else {
+      var cls=chatClass(txt);
+      el.className='cb '+(cls||'');
+      var icon=chatIcon(txt);
+      el.innerHTML='<div class="cb-time">'+time+'</div><div class="cb-bub">'+icon+' '+txt+'</div>';
+    }
+    chat.appendChild(el);
+  });
+  // Scroll to bottom if was at bottom or first load
+  if(first||wasBottom){
+    chat.scrollTop=chat.scrollHeight;
+  }
+}
+// ─────────────────────────────────────────────────────────
 
 loadBaked();loadAll();
 </script>
 
-<!-- Match Detail Modal -->
+<!-- Live Chat Modal -->
 <div id="matchModal" class="modal" onclick="if(event.target===this)closeMatch()">
   <div class="msheet">
-    <div class="mclose"><button class="mclose-btn" onclick="closeMatch()">&#10005;</button></div>
-    <div id="modalContent"><div class="lod"><div class="spin"></div>Carregando...</div></div>
+    <!-- Fixed Header: score + teams -->
+    <div class="mhead">
+      <div class="mhead-top">
+        <div style="width:30px"></div>
+        <div class="mhead-teams" id="mheadTeams"><!-- filled by JS --></div>
+        <button class="mhead-close" onclick="closeMatch()">&#10005;</button>
+      </div>
+    </div>
+    <!-- Scrollable chat area -->
+    <div class="mchat" id="mChat">
+      <div class="mchat-loading"><div class="spin"></div>Carregando...</div>
+    </div>
   </div>
 </div>
 
