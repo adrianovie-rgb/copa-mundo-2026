@@ -898,6 +898,7 @@ function renderChat(d,first){
   if(!newItems.length&&!first)return;
   _mSeq=items.length?items[items.length-1].sequence:_mSeq;
   if(first) chat.innerHTML='';
+  var _usedVids={};  // track which video indices are already assigned
   newItems.forEach(function(c){
     var time=c.time&&c.time.displayValue?c.time.displayValue:'';
     var txt=c.text||'';
@@ -914,38 +915,38 @@ function renderChat(d,first){
       if(cls==='cb-goal'){
         var vids=window._matchVideos||[];
         if(vids.length){
-          // 1. Extract scorer name tokens from commentary
+          // Extract scorer name tokens (min 3 chars to avoid false matches)
           var scorerMatch=txt.match(/([A-Za-záàâãéêíóôõúüçñÁÀÂÃÉÊÍÓÔÕÚÜÇÑ][a-záàâãéêíóôõúüçñ]+(?:[\s\-][A-Za-záàâãéêíóôõúüçñÁÀÂÃÉÊÍÓÔÕÚÜÇÑ][a-záàâãéêíóôõúüçñ]+)*)\s*\(/);
           var tokens=[];
           if(scorerMatch){
-            tokens=scorerMatch[1].trim().toLowerCase().split(/[\s\-]+/).filter(function(t){return t.length>3;});
+            tokens=scorerMatch[1].trim().toLowerCase().split(/[\s\-]+/).filter(function(t){return t.length>2;});
           }
           var vi=-1;
-          // 2. First pass: match by name AND short duration (real goal clip)
           if(tokens.length){
-            vi=vids.findIndex(function(v){
-              var dur=v.duration||999;
-              var hl=(v.headline||'').toLowerCase();
-              var desc=(v.description||'').toLowerCase();
-              var hasName=tokens.some(function(t){return hl.includes(t)||desc.includes(t);});
-              return hasName&&dur<120;
-            });
+            // Pass 1: unused short clip (≤120s) with name in headline
+            for(var _i=0;_i<vids.length;_i++){
+              if(_usedVids[_i])continue;
+              var _v=vids[_i];
+              var _dur=_v.duration||999;
+              var _hl=(_v.headline||'').toLowerCase();
+              if(_dur<=120&&tokens.some(function(t){return _hl.includes(t);})){vi=_i;break;}
+            }
+            // Pass 2: unused clip ≤240s with name in headline
+            if(vi<0){
+              for(var _i=0;_i<vids.length;_i++){
+                if(_usedVids[_i])continue;
+                var _v=vids[_i];
+                var _dur=_v.duration||999;
+                var _hl=(_v.headline||'').toLowerCase();
+                if(_dur<=240&&tokens.some(function(t){return _hl.includes(t);})){vi=_i;break;}
+              }
+            }
           }
-          // 3. Second pass: match by name in headline regardless of duration (but exclude very long highlights >240s)
-          if(vi<0&&tokens.length){
-            vi=vids.findIndex(function(v){
-              var dur=v.duration||999;
-              var hl=(v.headline||'').toLowerCase();
-              return tokens.some(function(t){return hl.includes(t);})&&dur<240;
-            });
-          }
-          // 4. If found a clip: show goal button; else show highlights button (video[0])
           if(vi>=0){
+            _usedVids[vi]=true;  // claim this video — no other goal can use it
             playBtn='<button class="cb-play" data-vi="'+vi+'">▶ Ver gol</button>';
-          }else if(vids[0]){
-            // No individual clip — offer highlights reel
-            playBtn='<button class="cb-play" data-vi="0" style="opacity:.65">▶ Highlights</button>';
           }
+          // No "Highlights" fallback button — avoids misleading users with wrong video
         }
       }
       el.innerHTML='<div class="cb-time">'+time+'</div><div class="cb-bub">'+icon+' '+txt+(playBtn?'<br>'+playBtn:'')+'</div>';
