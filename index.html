@@ -237,30 +237,97 @@ function notifGoal(body){
     new Notification('⚽ GOOOL! Copa 2026',{body:body,icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">⚽</text></svg>',tag:'g'+Date.now()});
   toast('⚽ GOOOL! '+body,true);
 }
-async function api(ep){
-  // Try corsproxy.io (works from browsers, not servers)
-  var proxies=[
-    'https://corsproxy.io/?url='+encodeURIComponent(API+ep),
-    'https://thingproxy.freeboard.io/fetch/'+API+ep
-  ];
-  for(var i=0;i<proxies.length;i++){
-    try{
-      var r=await fetch(proxies[i],{cache:'no-cache'});
-      if(!r.ok)continue;
-      var d=await r.json();
-      localStorage.setItem('c26_'+ep,JSON.stringify(d));
-      return d;
-    }catch(e){}
-  }
-  // Direct (may work on some networks without strict CORS)
-  try{
-    var r0=await fetch(API+ep,{cache:'no-cache',mode:'cors'});
-    if(r0.ok){var d0=await r0.json();localStorage.setItem('c26_'+ep,JSON.stringify(d0));return d0;}
-  }catch(e0){}
-  // LocalStorage cache
-  var c=localStorage.getItem('c26_'+ep);
-  if(c)return JSON.parse(c);
-  throw new Error('all sources failed');
+// ESPN public API — CORS nativo, sem chave, dados ao vivo
+var ESPN_SB='https://site.api.espn.com/apis/site/v2/sports/soccer/FIFA.World/scoreboard?dates=20260611-20260719&limit=200';
+var ESPN_ST='https://site.api.espn.com/apis/v2/sports/soccer/FIFA.World/standings';
+
+// ISO date → MM/DD/YYYY HH:MM em BRT (UTC-3)
+function espnDate(iso){
+  var d=new Date(iso);
+  var b=new Date(d.getTime()-3*3600000);
+  return String(b.getUTCMonth()+1).padStart(2,'0')+'/'+String(b.getUTCDate()).padStart(2,'0')+'/'+b.getUTCFullYear()+' '+String(b.getUTCHours()).padStart(2,'0')+':'+String(b.getUTCMinutes()).padStart(2,'0');
+}
+// Extrai letra do grupo ou fase eliminatória
+function espnGroup(note){
+  var m=note&&note.match(/Group\s+([A-L])/i);
+  if(m)return m[1].toUpperCase();
+  if(/Round of 32/i.test(note))return 'R32';
+  if(/Round of 16/i.test(note))return 'R16';
+  if(/Quarter.*Final/i.test(note))return 'QF';
+  if(/Semi.*Final/i.test(note))return 'SF';
+  if(/Third.*Place/i.test(note))return '3P';
+  if(/Final/i.test(note))return 'F';
+  return '?';
+}
+// Monta string de artilheiros no formato esperado pelo parseSc()
+function espnScorers(details,teamId){
+  var sc=[];
+  (details||[]).forEach(function(d){
+    if(!d.scoringPlay||d.ownGoal)return;
+    if(String(d.team&&d.team.id)!==String(teamId))return;
+    var nm=d.athletesInvolved&&d.athletesInvolved[0]?d.athletesInvolved[0].shortName:'';
+    var t=d.clock?d.clock.displayValue:'';
+    if(nm)sc.push('"'+nm+(t?' '+t:'')+'"');
+  });
+  return sc.length?'{'+sc.join(',')+'}':null;
+}
+// Transforma dados ESPN nos formatos S.T / S.G / S.M do app
+function parseESPN(sbData,stData){
+  // S.T — times (logos ESPN em alta resolução)
+  S.T={};
+  stData.children.forEach(function(grp){
+    grp.standings.entries.forEach(function(e){
+      var t=e.team,logo=t.logos&&t.logos[0]?t.logos[0].href:'';
+      S.T[t.id]={id:t.id,name_en:t.displayName,flag:logo};
+    });
+  });
+  sbData.events.forEach(function(ev){
+    ev.competitions[0].competitors.forEach(function(c){
+      var t=c.team;
+      if(!S.T[t.id])S.T[t.id]={id:t.id,name_en:t.displayName,flag:t.logo||''};
+    });
+  });
+  // S.G — classificação por grupo
+  S.G=stData.children.map(function(grp){
+    var letter=grp.name.replace('Group ','').trim();
+    var teams=grp.standings.entries.map(function(e){
+      var st={};
+      e.stats.forEach(function(s){st[s.name]=s.displayValue;});
+      return{team_id:e.team.id,mp:st.gamesPlayed||'0',w:st.wins||'0',d:st.ties||'0',l:st.losses||'0',pts:st.points||'0',gf:st.pointsFor||'0',ga:st.pointsAgainst||'0',gd:st.pointDifferential||'0'};
+    });
+    return{name:letter,teams:teams};
+  });
+  // Pré-computa matchday: por grupo, ordena por data e numera em pares
+  var grpDates={};
+  sbData.events.forEach(function(ev){
+    var m=(ev.competitions[0].altGameNote||'').match(/Group\s+([A-L])/i);
+    if(m){var g=m[1].toUpperCase();if(!grpDates[g])grpDates[g]=[];grpDates[g].push({id:ev.id,date:ev.date});}
+  });
+  var mdMap={};
+  Object.keys(grpDates).forEach(function(g){
+    grpDates[g].slice().sort(function(a,b){return a.date>b.date?1:-1;}).forEach(function(x,i){mdMap[x.id]=Math.floor(i/2)+1;});
+  });
+  // S.M — jogos
+  S.M=sbData.events.map(function(ev){
+    var c=ev.competitions[0];
+    var home=c.competitors.find(function(x){return x.homeAway==='home';})||c.competitors[0];
+    var away=c.competitors.find(function(x){return x.homeAway==='away';})||c.competitors[1];
+    var st=c.status.type,note=c.altGameNote||'';
+    var group=espnGroup(note);
+    var type=group.length===1?'group':group.toLowerCase();
+    var te=st.state==='pre'?'notstarted':st.name==='STATUS_HALFTIME'?'halftime':st.state==='in'?'inprogress':'finished';
+    return{
+      id:ev.id,
+      home_team_id:home.team.id,away_team_id:away.team.id,
+      home_score:home.score||'0',away_score:away.score||'0',
+      home_team_name_en:home.team.displayName,away_team_name_en:away.team.displayName,
+      home_scorers:espnScorers(c.details,home.team.id),
+      away_scorers:espnScorers(c.details,away.team.id),
+      group:group,matchday:String(mdMap[ev.id]||'1'),
+      local_date:espnDate(ev.date),
+      finished:st.completed?'TRUE':'',time_elapsed:te,type:type
+    };
+  });
 }
 function loadBaked(){
   S.T={};(BAKED.teams||[]).forEach(function(t){S.T[t.id]=t;});
@@ -270,22 +337,21 @@ function loadBaked(){
   renderG();renderM();renderA();renderC();renderI();
 }
 async function loadAll(){
-  document.getElementById('lastUpdate').textContent='Atualizando...';
   try{
-    var res=await Promise.all([api('teams'),api('groups'),api('games')]);
-    S.T={};(res[0].teams||[]).forEach(function(t){S.T[t.id]=t;});
-    S.G=res[1].groups||[];S.M=res[2].games||[];
+    document.getElementById('lastUpdate').textContent='Atualizando...';
+    var sb=await fetch(ESPN_SB,{cache:'no-cache'}).then(function(r){return r.json();});
+    var st=await fetch(ESPN_ST,{cache:'no-cache'}).then(function(r){return r.json();});
+    parseESPN(sb,st);
     checkGoals();
     renderG();renderM();renderA();renderC();renderI();
+    updateLiveBadge();
     var live=S.M.some(function(g){return g.time_elapsed==='inprogress'||g.time_elapsed==='halftime';});
     document.getElementById('liveDot').style.display=live?'block':'none';
     var n=new Date();
-    document.getElementById('lastUpdate').textContent='⚡ Ao vivo — '+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
+    document.getElementById('lastUpdate').textContent='⚡ ESPN ao vivo — '+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
     window._lastLoad=Date.now();
     document.getElementById('loadMsg').style.display='none';
   }catch(e){
-    // Live failed — keep showing baked data, just update badge
-    var n2=new Date();
     document.getElementById('lastUpdate').textContent='Dados: '+BAKED.baked_at+' (offline)';
     document.getElementById('loadMsg').style.display='none';
   }
