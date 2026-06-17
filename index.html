@@ -732,7 +732,7 @@ window.addEventListener('focus',function(){loadAll();});
 
 
 // ── Live Chat Modal ─────────────────────────────────────
-var ESPN_SUMMARY='https://site.api.espn.com/apis/site/v2/sports/soccer/FIFA.World/summary?event=';
+var ESPN_SUMMARY='https://site.api.espn.com/apis/site/v2/sports/soccer/FIFA.World/summary?event={ID}&lang=pt';
 var _mTimer=null,_mId=null,_mSeq=-1;
 
 function openMatch(id){
@@ -751,7 +751,7 @@ function closeMatch(){
   if(_mTimer){clearInterval(_mTimer);_mTimer=null;}
 }
 function fetchMatch(id,first){
-  fetch(ESPN_SUMMARY+id,{cache:'no-cache'})
+  fetch(ESPN_SUMMARY.replace('{ID}',id),{cache:'no-cache'})
     .then(function(r){return r.json();})
     .then(function(d){
       renderMatchHead(d);
@@ -790,29 +790,31 @@ function renderMatchHead(d){
 
 function chatClass(txt){
   var t=txt.toLowerCase();
-  if(t.startsWith('goal!'))return 'cb-goal';
-  if(t.includes('yellow card'))return 'cb-yellow';
-  if(t.includes('red card'))return 'cb-red';
-  if(t.startsWith('substitution'))return 'cb-sub';
-  if(t.startsWith('attempt'))return 'cb-attempt';
+  if(t.startsWith('gol!'))return 'cb-goal';
+  if(t.includes('cartão amarelo'))return 'cb-yellow';
+  if(t.includes('cartão vermelho'))return 'cb-red';
+  if(t.startsWith('substituição'))return 'cb-sub';
+  if(t.startsWith('finalização')||t.startsWith('tentativa'))return 'cb-attempt';
   return '';
 }
 function chatIcon(txt){
   var t=txt.toLowerCase();
-  if(t.startsWith('goal!'))return '⚽';
-  if(t.includes('yellow card'))return '🟨';
-  if(t.includes('red card'))return '🟥';
-  if(t.startsWith('substitution'))return '🔄';
+  if(t.startsWith('gol!'))return '⚽';
+  if(t.includes('cartão amarelo'))return '🟨';
+  if(t.includes('cartão vermelho')||t.includes('expulsão'))return '🟥';
+  if(t.startsWith('substituição'))return '🔄';
   if(t.includes('var'))return '📺';
-  if(t.includes('offside'))return '🚩';
-  if(t.includes('penalty')||t.includes('handball'))return '🤚';
-  if(t.includes('corner'))return '🚀';
-  if(t.includes('foul'))return '⚠️';
+  if(t.includes('impedimento'))return '🚩';
+  if(t.includes('pênalti')||t.includes('penâlt')||t.includes('mão na bola'))return '🤚';
+  if(t.includes('escanteio'))return '🚀';
+  if(t.includes('falta'))return '⚠️';
   return '💬';
 }
 function isSep(txt){
   var t=txt.toLowerCase();
-  return t.includes('half begins')||t.includes('half ends')||t.includes('match ends')||t.includes('second half begins');
+  return t.includes('1º tempo')||t.includes('2º tempo')||t.includes('segundo tempo')||
+         t.includes('primeiro tempo')||t.includes('encerra')||t.includes('começa')||
+         t.includes('partida encerrada')||t.includes('intervalo')||t.includes('half');
 }
 
 function renderChat(d,first){
