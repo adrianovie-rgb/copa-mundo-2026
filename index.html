@@ -7,6 +7,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Copa 2026 · AV">
 <meta name="theme-color" content="#131921">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>⚽ Copa do Mundo 2026 | by Adriano Vieira</title>
 <style>
 :root{--navy:#131921;--navy2:#1e2832;--navy3:#232f3e;--orange:#ff9900;--green:#00a650;--red:#cc0c39;--blue:#00a8e1;--text:#e8ecef;--muted:#8b96a3;--card:#1e2832;--border:#2d3a4a}
@@ -252,7 +255,7 @@ async function loadAll(){
     var live=S.M.some(function(g){return g.time_elapsed==='inprogress'||g.time_elapsed==='halftime';});
     document.getElementById('liveDot').style.display=live?'block':'none';
     var n=new Date();
-    document.getElementById('lastUpdate').textContent='Atualizado '+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
+    document.getElementById('lastUpdate').textContent='Atualizado às '+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');window._lastLoad=Date.now();
     document.getElementById('loadMsg').style.display='none';
   }catch(e){
     document.getElementById('lastUpdate').textContent='Erro — tente novamente';
@@ -582,7 +585,27 @@ function updateLiveBadge(){
   b.style.display=live?'inline-block':'none';
   document.getElementById('liveDot').style.display=live?'block':'none';
 }
-setInterval(loadAll,60000);
+// Auto-refresh a cada 60s (quando aba está ativa)
+setInterval(function(){
+  if(!document.hidden)loadAll();
+},60000);
+
+// Recarrega dados ao voltar para a aba (mobile background suspension fix)
+document.addEventListener('visibilitychange',function(){
+  if(!document.hidden){
+    var el=document.getElementById('lastUpdate');
+    if(el&&el.textContent.indexOf('Atualizando')<0)loadAll();
+  }
+});
+
+// iOS: recarrega ao voltar via botão "voltar" do Safari
+window.addEventListener('pageshow',function(e){
+  if(e.persisted)loadAll();
+});
+
+// Recarrega ao ganhar foco (troca de app no celular)
+window.addEventListener('focus',function(){loadAll();});
+
 loadAll();
 </script>
 </body>
