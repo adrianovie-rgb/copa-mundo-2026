@@ -384,6 +384,14 @@ body{background:var(--navy);color:var(--text);font-family:-apple-system,BlinkMac
 
 </style>
 
+
+
+<!-- Firebase SDK -->
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
 </head>
 
 <body>
@@ -488,6 +496,7 @@ body{background:var(--navy);color:var(--text);font-family:-apple-system,BlinkMac
 
 <div id="p4" class="panel"><div id="iContent"><div class="lod"><div class="spin"></div></div></div></div>
 
+<div id="p5" class="panel"><div id="blContent"><div class="lod"><div class="spin"></div></div></div></div>
 <div class="bnav">
 
   <div class="bi2 active" id="nav0" onclick="goP(0,null,1)"><div class="bic">🏆</div><div class="bla">Grupos</div></div>
@@ -499,6 +508,7 @@ body{background:var(--navy);color:var(--text);font-family:-apple-system,BlinkMac
   <div class="bi2" id="nav3" onclick="goP(3,null,1)"><div class="bic">🗂</div><div class="bla">Chaveamento</div></div>
 
   <div class="bi2" id="nav4" onclick="goP(4,null,1)"><div class="bic">📊</div><div class="bla">Insights</div></div>
+  <div class="bi2" id="nav5" onclick="goP(5,null,1)"><div class="bic">🎯</div><div class="bla">Bolão</div></div>
 
 </div>
 
@@ -516,7 +526,7 @@ var PX='https://corsproxy.io/?url=';
 
 function goP(n,tab,fromBot){
 
-  for(var i=0;i<5;i++){
+  for(var i=0;i<6;i++){
 
     document.getElementById('p'+i).classList.toggle('active',i===n);
 
@@ -2006,7 +2016,158 @@ document.addEventListener('click',function(e){
 
 
 
-loadBaked();loadAll();
+
+// ══════════════════════════════════════════════════════
+// BOLÃO — Firebase Realtime Database
+// ══════════════════════════════════════════════════════
+var FB_CFG={
+  apiKey:"AIzaSyCM2ftE9F9CBloUOZ3S-iL2osPAemmI5_s",
+  authDomain:"copa2026-bolao-6e77e.firebaseapp.com",
+  databaseURL:"https://copa2026-bolao-6e77e-default-rtdb.firebaseio.com",
+  projectId:"copa2026-bolao-6e77e",
+  storageBucket:"copa2026-bolao-6e77e.firebasestorage.app",
+  messagingSenderId:"319851919465",
+  appId:"1:319851919465:web:32171d17e3cf94d7be0af8"
+};
+var fbApp,db;
+try{fbApp=firebase.initializeApp(FB_CFG);db=firebase.database();}catch(e){console.warn('Firebase:',e);}
+
+var BL={uid:null,nick:null,picks:{},scores:{}};
+
+function blInit(){
+  var uid=localStorage.getItem('bl_uid');
+  var nick=localStorage.getItem('bl_nick');
+  if(uid&&nick){BL.uid=uid;BL.nick=nick;blLoad();}
+  else{document.getElementById('blModal').style.display='flex';}
+}
+function blSetNick(){
+  var v=document.getElementById('blNickInput').value.trim();
+  if(!v||v.length<2){toast('Apelido muito curto!');return;}
+  var uid='u'+Date.now().toString(36)+Math.random().toString(36).substr(2,4);
+  BL.uid=uid;BL.nick=v;
+  localStorage.setItem('bl_uid',uid);localStorage.setItem('bl_nick',v);
+  db.ref('bolao/users/'+uid).set({nickname:v,createdAt:Date.now()});
+  document.getElementById('blModal').style.display='none';
+  blLoad();
+}
+function blLoad(){
+  db.ref('bolao/palpites/'+BL.uid).on('value',function(s){
+    BL.picks=s.val()||{};renderBolao();
+  });
+  db.ref('bolao/scores').on('value',function(s){
+    BL.scores=s.val()||{};renderBolao();
+  });
+}
+function blSavePick(gid){
+  var hi=document.getElementById('bl_h_'+gid);
+  var ai=document.getElementById('bl_a_'+gid);
+  var h=parseInt(hi.value),a=parseInt(ai.value);
+  if(isNaN(h)||isNaN(a)||h<0||a<0||h>20||a>20){toast('Placar inválido');return;}
+  db.ref('bolao/palpites/'+BL.uid+'/'+gid).set({home:h,away:a,ts:Date.now()})
+    .then(function(){toast('Palpite salvo! \u26bd');hi.style.borderColor='var(--green)';ai.style.borderColor='var(--green)';blCalcAndSave();})
+    .catch(function(e){toast('Erro: '+e.message);});
+}
+function blCalcAndSave(){
+  var pts=0,exact=0,win=0,total=0;
+  S.M.forEach(function(g){
+    if(g.finished!=='TRUE')return;
+    var p=BL.picks[g.id];if(!p)return;
+    total++;
+    var ah=parseInt(g.home_score),aa=parseInt(g.away_score);
+    var ph=p.home,pa=p.away;
+    if(ph===ah&&pa===aa){pts+=3;exact++;}
+    else{var ar=ah>aa?1:ah<aa?-1:0,pr=ph>pa?1:ph<pa?-1:0;if(ar===pr){pts+=1;win++;}}
+  });
+  if(BL.uid)db.ref('bolao/scores/'+BL.uid).set({nickname:BL.nick,pts:pts,exact:exact,win:win,total:total,updated:Date.now()});
+  return{pts:pts,exact:exact,win:win,total:total};
+}
+function blPickDeadlinePassed(g){
+  if(!g.local_date)return false;
+  var p=g.local_date.split(' '),dp=p[0].split('/'),tp=(p[1]||'00:00').split(':');
+  var ko=new Date(parseInt(dp[2]),parseInt(dp[0])-1,parseInt(dp[1]),parseInt(tp[0]),parseInt(tp[1]));
+  return new Date()>=ko||g.time_elapsed!=='notstarted';
+}
+function renderBolao(){
+  if(!BL.uid){blInit();return;}
+  var sc=blCalcAndSave();
+  var h='';
+  // Header pessoal
+  h+='<div style="background:linear-gradient(135deg,var(--navy3),#1a2a1a);border:1px solid var(--orange);border-radius:12px;padding:16px;margin-bottom:14px">';
+  h+='<div style="font-size:10px;color:var(--orange);font-weight:700;letter-spacing:.5px;margin-bottom:6px">SEU PLACAR</div>';
+  h+='<div style="font-size:20px;font-weight:900;color:var(--text)">'+BL.nick+'</div>';
+  h+='<div style="display:flex;gap:20px;margin-top:10px">';
+  h+='<div><div style="font-size:26px;font-weight:900;color:var(--orange)">'+sc.pts+'</div><div style="font-size:10px;color:var(--muted)">pontos</div></div>';
+  h+='<div><div style="font-size:26px;font-weight:900;color:var(--green)">'+sc.exact+'</div><div style="font-size:10px;color:var(--muted)">exatos</div></div>';
+  h+='<div><div style="font-size:26px;font-weight:900;color:var(--blue)">'+sc.win+'</div><div style="font-size:10px;color:var(--muted)">acertos</div></div>';
+  h+='<div><div style="font-size:26px;font-weight:900;color:var(--muted)">'+sc.total+'</div><div style="font-size:10px;color:var(--muted)">jogos</div></div>';
+  h+='</div></div>';
+  // Palpites pendentes
+  var now=new Date();
+  var open=S.M.filter(function(g){return !blPickDeadlinePassed(g)&&g.home_team_id!=='0';}).slice(0,12);
+  if(open.length){
+    h+='<div class="shdr">Fazer Palpites</div>';
+    open.forEach(function(g){
+      var hN=tn(g.home_team_id,g.home_team_name_en),aN=tn(g.away_team_id,g.away_team_name_en);
+      var hF=tf(g.home_team_id),aF=tf(g.away_team_id);
+      var pk=BL.picks[g.id];
+      h+='<div style="background:var(--card);border:1px solid '+(pk?'var(--green)':'var(--border)')+';border-radius:10px;padding:12px;margin-bottom:8px">';
+      h+='<div style="font-size:10px;color:var(--muted);margin-bottom:8px">'+fd(g.local_date)+' \u00b7 '+g.group+(pk?' \u00b7 <span style="color:var(--green)">\u2713 Palpite salvo</span>':'')+'</div>';
+      h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:10px">';
+      h+='<div style="flex:1;display:flex;align-items:center;justify-content:flex-end;gap:6px;font-size:12px;font-weight:600">';
+      if(hF)h+='<img style="width:18px;height:13px;object-fit:cover;border-radius:2px" src="'+hF+'" alt="">';
+      h+=hN+'</div>';
+      h+='<div style="font-size:10px;color:var(--muted)">vs</div>';
+      h+='<div style="flex:1;display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600">';
+      if(aF)h+='<img style="width:18px;height:13px;object-fit:cover;border-radius:2px" src="'+aF+'" alt="">';
+      h+=aN+'</div></div>';
+      h+='<div style="display:flex;align-items:center;gap:8px">';
+      h+='<input id="bl_h_'+g.id+'" type="number" min="0" max="20" value="'+(pk!==undefined?pk.home:'')+'" placeholder="0" style="width:52px;text-align:center;background:var(--navy3);border:1px solid '+(pk?'var(--green)':'var(--border)')+';color:var(--text);border-radius:8px;padding:8px;font-size:18px;font-weight:700">';
+      h+='<span style="color:var(--muted);font-size:14px">\u00d7</span>';
+      h+='<input id="bl_a_'+g.id+'" type="number" min="0" max="20" value="'+(pk!==undefined?pk.away:'')+'" placeholder="0" style="width:52px;text-align:center;background:var(--navy3);border:1px solid '+(pk?'var(--green)':'var(--border)')+';color:var(--text);border-radius:8px;padding:8px;font-size:18px;font-weight:700">';
+      h+='<button onclick="blSavePick(\''+g.id+'\')" style="flex:1;background:'+(pk?'rgba(0,166,80,.2)':'var(--orange)')+';color:'+(pk?'var(--green)':'#000')+';border:'+(pk?'1px solid var(--green)':'none')+';border-radius:8px;padding:9px;font-size:12px;font-weight:700;cursor:pointer">'+(pk?'\u2713 Salvo':'Salvar')+'</button>';
+      h+='</div></div>';
+    });
+  }
+  // Meus resultados
+  var done=S.M.filter(function(g){return g.finished==='TRUE'&&BL.picks[g.id];}).reverse().slice(0,8);
+  if(done.length){
+    h+='<div class="shdr">Meus Resultados</div>';
+    done.forEach(function(g){
+      var pk=BL.picks[g.id];
+      var ah=parseInt(g.home_score),aa=parseInt(g.away_score),ph=pk.home,pa=pk.away;
+      var isExact=ph===ah&&pa===aa;
+      var ar=ah>aa?1:ah<aa?-1:0,pr=ph>pa?1:ph<pa?-1:0;
+      var isWin=!isExact&&ar===pr;
+      var pts=isExact?3:isWin?1:0;
+      var col=isExact?'var(--green)':isWin?'var(--orange)':'var(--red)';
+      h+='<div style="background:var(--card);border:1px solid var(--border);border-left:3px solid '+col+';border-radius:10px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px">';
+      h+='<div style="flex:1">';
+      h+='<div style="font-size:11px;font-weight:600">'+tn(g.home_team_id,g.home_team_name_en)+' <span style="color:var(--orange)">'+g.home_score+'\u2013'+g.away_score+'</span> '+tn(g.away_team_id,g.away_team_name_en)+'</div>';
+      h+='<div style="font-size:10px;color:var(--muted)">Seu palpite: '+ph+'\u2013'+pa+(isExact?' \u2022 Placar exato! \ud83c\udf1f':isWin?' \u2022 Resultado certo':' \u2022 Errou')+'</div>';
+      h+='</div><div style="font-size:20px;font-weight:700;color:'+col+'">+'+pts+'</div></div>';
+    });
+  }
+  // Leaderboard
+  var board=Object.entries(BL.scores).map(function(e){return e[1];}).sort(function(a,b){return b.pts-a.pts;});
+  h+='<div class="shdr">Leaderboard \ud83c\udfc6</div>';
+  if(!board.length){
+    h+='<div style="text-align:center;padding:30px;color:var(--muted);font-size:12px">Nenhum palpite ainda \u2014 seja o primeiro! \ud83d\ude80</div>';
+  }else{
+    h+='<div class="tcard"><div class="thdr">\ud83c\udfc6 Classificação Geral \u2014 Copa 2026</div>';
+    board.forEach(function(p,i){
+      var me=p.nickname===BL.nick;
+      h+='<div class="tr2" style="'+(me?'background:rgba(255,153,0,.1);border-left:2px solid var(--orange)':'')+'"><div class="trk '+(i===0?'g':i===1?'s':i===2?'b':'')+'">'+(i+1)+'</div>';
+      h+='<div class="ti"><div class="tn">'+(me?'\u2b50 ':'')+p.nickname+'</div>';
+      h+='<div class="td2">'+p.exact+' exatos \u00b7 '+p.win+' acertos \u00b7 '+(p.total||0)+' jogos</div></div>';
+      h+='<div class="ts" style="color:var(--orange)">'+p.pts+'</div></div>';
+    });
+    h+='</div>';
+  }
+  h+='<div style="text-align:center;margin-top:16px;font-size:10px;color:var(--muted)">Pontuação: 3pts placar exato \u00b7 1pt resultado certo \u00b7 0pt errou</div>';
+  document.getElementById('blContent').innerHTML=h;
+}
+
+loadBaked();loadAll();blInit();
 
 </script>
 
@@ -2069,6 +2230,30 @@ loadBaked();loadAll();
 </div>
 
 
+
+
+
+<!-- Modal Bolão -->
+
+<div id="blModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:999;align-items:center;justify-content:center;padding:20px">
+
+  <div style="background:var(--navy2);border:1px solid var(--border);border-radius:16px;padding:24px;width:100%;max-width:340px;text-align:center">
+
+    <div style="font-size:32px;margin-bottom:12px">🎯</div>
+
+    <div style="font-size:18px;font-weight:700;margin-bottom:6px">Entrar no Bolão</div>
+
+    <div style="font-size:12px;color:var(--muted);margin-bottom:16px">Escolha seu apelido para competir com todos os participantes</div>
+
+    <input id="blNickInput" type="text" maxlength="20" placeholder="Seu apelido..." autocomplete="off"
+
+      style="width:100%;background:var(--navy3);border:1px solid var(--orange);color:var(--text);border-radius:8px;padding:12px;font-size:16px;text-align:center;margin-bottom:12px">
+
+    <button onclick="blSetNick()" style="width:100%;background:var(--orange);color:#000;border:none;border-radius:8px;padding:12px;font-size:15px;font-weight:700;cursor:pointer">Entrar ⚽</button>
+
+  </div>
+
+</div>
 
 </body>
 
