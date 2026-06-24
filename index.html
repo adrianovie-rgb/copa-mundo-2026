@@ -1,1004 +1,2076 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
 <meta name="apple-mobile-web-app-capable" content="yes">
+
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
 <meta name="apple-mobile-web-app-title" content="Copa 2026 · AV">
+
 <meta name="theme-color" content="#131921">
+
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+
 <meta http-equiv="Pragma" content="no-cache">
+
 <meta http-equiv="Expires" content="0">
+
 <title>⚽ Copa do Mundo 2026 | by Adriano Vieira</title>
+
 <style>
+
 :root{--navy:#131921;--navy2:#1e2832;--navy3:#232f3e;--orange:#ff9900;--green:#00a650;--red:#cc0c39;--blue:#00a8e1;--text:#e8ecef;--muted:#8b96a3;--card:#1e2832;--border:#2d3a4a}
+
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
 body{background:var(--navy);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:14px;min-height:100vh;overflow-x:hidden}
+
 .hdr{position:sticky;top:0;z-index:100;background:linear-gradient(135deg,#0d1b2a 0%,#1a2a1a 40%,#1a1500 100%);border-bottom:3px solid var(--orange);overflow:hidden}
+
 .hdr::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(255,153,0,.03) 60px,rgba(255,153,0,.03) 61px),repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(255,153,0,.03) 60px,rgba(255,153,0,.03) 61px);pointer-events:none}
+
 .hdr-inner{position:relative;padding:14px 16px 10px;display:flex;flex-direction:column;gap:10px}
+
 .hdr-top{display:flex;align-items:center;justify-content:space-between}
+
 .hdr-left{display:flex;align-items:center;gap:10px}
+
 .hdr-ball{font-size:28px;animation:spin3d 8s linear infinite;display:inline-block;filter:drop-shadow(0 0 8px rgba(255,153,0,.6))}
+
 @keyframes spin3d{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+
 .hdr-titles{display:flex;flex-direction:column;gap:2px}
+
 .htitle{font-size:18px;font-weight:900;letter-spacing:.5px;background:linear-gradient(90deg,#ff9900,#ffcc44,#ff9900);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shine 3s linear infinite}
+
 @keyframes shine{0%{background-position:0%}100%{background-position:200%}}
+
 .hsub{font-size:10px;color:var(--muted);letter-spacing:.3px}
+
 .hdr-right{display:flex;align-items:center;gap:8px}
+
 .bnotif{background:rgba(255,153,0,.12);border:1px solid rgba(255,153,0,.4);color:var(--orange);padding:7px 11px;border-radius:8px;font-size:11px;cursor:pointer;font-weight:600;transition:all .25s;white-space:nowrap}
+
 .bnotif:active{transform:scale(.95)}
+
 .bnotif.on{background:var(--orange);color:#000;border-color:var(--orange);box-shadow:0 0 12px rgba(255,153,0,.5)}
+
 .ldot{width:8px;height:8px;background:var(--red);border-radius:50%;animation:pulse 1.2s infinite;display:none;box-shadow:0 0 6px var(--red)}
+
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+
 .hdr-strip{display:flex;align-items:center;justify-content:space-between;padding:0 2px 2px;gap:8px}
+
 .hdr-author{font-size:11px;font-weight:700;color:rgba(255,153,0,.8);letter-spacing:.5px;display:flex;align-items:center;gap:5px}
+
 .hdr-author::before{content:'';display:inline-block;width:18px;height:2px;background:var(--orange);border-radius:2px}
+
 .hdr-flags{display:flex;align-items:center;gap:6px;font-size:13px}
+
 .hdr-date-badge{background:rgba(255,153,0,.15);border:1px solid rgba(255,153,0,.3);border-radius:6px;padding:3px 8px;font-size:10px;color:var(--orange);font-weight:600;white-space:nowrap}
+
 .tabs{background:var(--navy2);display:flex;overflow-x:auto;border-bottom:1px solid var(--border);scrollbar-width:none}
+
 .tabs::-webkit-scrollbar{display:none}
+
 .tab{padding:11px 16px;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;flex-shrink:0}
+
 .tab.active{color:var(--orange);border-bottom-color:var(--orange)}
+
 .panel{display:none;padding:14px 14px 80px}
+
 .panel.active{display:block}
+
 .krow{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+
 .krow.c3{grid-template-columns:repeat(3,1fr)}
+
 .kpi{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+
 .kpi-l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+
 .kpi-v{font-size:20px;font-weight:700;color:var(--orange)}
+
 .kpi-s{font-size:10px;color:var(--muted);margin-top:2px}
+
 .shdr{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:16px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+
 .gcard{background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:12px;overflow:hidden}
+
 .gname{background:var(--navy3);padding:8px 14px;font-size:12px;font-weight:700;color:var(--orange);display:flex;align-items:center;gap:6px}
+
 .gt{width:100%;border-collapse:collapse}
+
 .gt th{background:var(--navy3);color:var(--muted);font-size:10px;font-weight:600;padding:6px 8px;text-align:center;border-bottom:1px solid var(--border)}
+
 .gt th:first-child{text-align:left;padding-left:14px;min-width:110px}
+
 .gt td{padding:8px 8px;text-align:center;font-size:12px;border-bottom:1px solid rgba(45,58,74,.4)}
+
 .gt td:first-child{text-align:left;padding-left:14px}
+
 .gt tr:last-child td{border-bottom:none}
+
 .tc{display:flex;align-items:center;gap:6px}
+
 .tf{width:20px;height:14px;object-fit:cover;border-radius:2px;flex-shrink:0}
+
 .pts{font-weight:700;color:var(--orange)}
+
 .q1{background:rgba(0,166,80,.12);border-left:3px solid var(--green)}
+
 .q3{background:rgba(0,168,225,.06);border-left:3px solid var(--blue)}
+
 .blv{display:inline-block;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:700;background:var(--red);color:#fff}
+
 .mc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:10px}
+
 .mm{font-size:10px;color:var(--muted);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+
 .slv{color:var(--red);font-weight:700;display:flex;align-items:center;gap:4px}
+
 .sdn{color:var(--green);font-weight:600}
+
 .ssn{color:var(--orange)}
+
 .mb{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
+
 .mt{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
+
 .mfl{width:32px;height:22px;object-fit:cover;border-radius:3px}
+
 .mn{font-size:11px;font-weight:600}
+
 .ms{text-align:center;min-width:60px}
+
 .sn{font-size:26px;font-weight:800;line-height:1}
+
 .sv{font-size:13px;color:var(--muted);font-weight:600}
+
 .scr{margin-top:8px;font-size:10px;color:var(--muted);display:flex;justify-content:space-between}
+
 .ss{max-width:45%}
+
 .ss.r{text-align:right}
+
 .fbar{display:flex;gap:8px;margin-bottom:12px;overflow-x:auto;scrollbar-width:none}
+
 .fb{padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:var(--navy2);color:var(--muted);font-size:11px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+
 .fb.active{background:var(--orange);color:#000;border-color:var(--orange);font-weight:700}
+
 .tcard{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:12px}
+
 .thdr{background:var(--navy3);padding:10px 14px;font-size:11px;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:.5px}
+
 .tr2{display:flex;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(45,58,74,.4)}
+
 .tr2:last-child{border-bottom:none}
+
 .trk{width:24px;font-size:11px;font-weight:700;color:var(--muted)}
+
 .trk.g{color:#ffd700}.trk.s{color:#c0c0c0}.trk.b{color:#cd7f32}
+
 .ti{flex:1}
+
 .tn{font-size:13px;font-weight:600}
+
 .td2{font-size:10px;color:var(--muted);margin-top:2px}
+
 .ts{font-size:18px;font-weight:800;color:var(--orange);min-width:30px;text-align:right}
+
 .icard{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px}
+
 .iico{font-size:20px;margin-bottom:6px}
+
 .itit{font-size:13px;font-weight:700;margin-bottom:4px}
+
 .ibod{font-size:12px;color:var(--muted);line-height:1.6}
+
 .im{color:var(--orange);font-weight:700}
+
 .ip{display:inline-block;background:rgba(255,153,0,.15);border:1px solid rgba(255,153,0,.3);color:var(--orange);font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;margin:2px 2px 0}
+
 .bm{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 12px;margin-bottom:8px}
+
 .bt{display:flex;justify-content:space-between;align-items:center;padding:4px 0}
+
 .bt:first-child{border-bottom:1px solid var(--border)}
+
 .bi{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:500}
+
 .bf{width:18px;height:12px;object-fit:cover;border-radius:2px}
+
 .bsc{font-size:14px;font-weight:700;color:var(--orange)}
+
 .bnav{position:fixed;bottom:0;left:0;right:0;background:var(--navy2);border-top:1px solid var(--border);display:flex;z-index:200;padding-bottom:env(safe-area-inset-bottom)}
+
 .bi2{flex:1;padding:10px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:var(--muted)}
+
 .bi2.active{color:var(--orange)}
+
 .bic{font-size:18px;line-height:1}
+
 .bla{font-size:9px;font-weight:600;letter-spacing:.3px}
+
 .rbar{background:var(--navy3);border-bottom:1px solid var(--border);padding:6px 14px;display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--muted)}
+
 .rbtn{background:none;border:1px solid var(--border);color:var(--muted);padding:3px 8px;border-radius:4px;font-size:10px;cursor:pointer}
+
 .toast{position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--green);color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;z-index:500;transition:transform .3s;pointer-events:none;max-width:90vw;text-align:center}
+
 .toast.show{transform:translateX(-50%) translateY(0)}
+
 .toast.goal{background:var(--red)}
+
 .spin{width:30px;height:30px;border:3px solid var(--border);border-top-color:var(--orange);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+
 @keyframes spin{to{transform:rotate(360deg)}}
+
 .lod{text-align:center;padding:40px 20px;color:var(--muted)}
+
 .gt th,.gt td{padding:9px 6px}
+
 .gt td:first-child,.gt th:first-child{padding-left:12px;min-width:120px}
+
 .mc{border-radius:12px}
+
 .mb{gap:6px}
+
 .mfl{width:36px;height:25px}
+
 .mn{font-size:12px;line-height:1.2;max-width:80px}
+
 .kpi{border-radius:12px;padding:12px 12px}
+
 .kpi-v{font-size:22px}
+
 .fbar{padding-bottom:4px}
+
 .fb{min-height:36px;display:flex;align-items:center}
 
+
+
 .gchips{display:flex;gap:8px;overflow-x:auto;padding:0 0 10px;margin-bottom:4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+
 .gchips::-webkit-scrollbar{display:none}
+
 .gchip{min-width:44px;min-height:40px;padding:0 12px;border-radius:22px;border:1.5px solid var(--border);background:var(--navy2);color:var(--muted);font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;position:relative;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:4px}
+
 .gchip:active{transform:scale(.94)}
+
 .gchip-on{background:var(--orange);color:#000;border-color:var(--orange);box-shadow:0 2px 12px rgba(255,153,0,.35)}
+
 .gchip-live::after{content:'';display:inline-block;width:6px;height:6px;background:var(--red);border-radius:50%;animation:pulse 1s infinite;position:absolute;top:6px;right:6px}
 
 
+
+
+
 /* ── Live Chat Modal ── */
+
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:400;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);align-items:flex-end}
+
 .modal.open{display:flex}
+
 .msheet{width:100%;height:90vh;display:flex;flex-direction:column;background:#0d1117;border-radius:18px 18px 0 0;overflow:hidden;animation:slideUp .28s ease-out}
+
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+
 .mhead{flex-shrink:0;background:linear-gradient(135deg,#0d1b2a,#1a2a1a);border-bottom:2px solid var(--orange);padding:10px 14px 8px}
+
 .mhead-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+
 .mhead-close{background:rgba(255,255,255,.1);border:none;color:var(--text);width:30px;height:30px;border-radius:50%;font-size:15px;cursor:pointer;flex-shrink:0}
+
 .mhead-teams{display:flex;align-items:center;justify-content:center;gap:10px;flex:1}
+
 .mteam-blk{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;max-width:100px}
+
 .mteam-blk img{width:40px;height:28px;object-fit:cover;border-radius:3px}
+
 .mteam-blk span{font-size:10px;font-weight:700;text-align:center;line-height:1.2;color:var(--text)}
+
 .mscore-blk{display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0}
+
 .mscore-num{font-size:30px;font-weight:900;color:var(--orange);letter-spacing:2px;line-height:1}
+
 .mstatus-pill{font-size:10px;font-weight:700;letter-spacing:.5px;padding:2px 8px;border-radius:10px;background:rgba(255,153,0,.15);color:var(--orange)}
+
 .mstatus-pill.live{background:rgba(204,12,57,.2);color:var(--red);animation:pulse 1.4s infinite}
+
 .mchat{flex:1;overflow-y:auto;padding:10px 10px 14px;display:flex;flex-direction:column;gap:5px;scroll-behavior:smooth;background:#0d1117}
+
 .mchat::-webkit-scrollbar{width:4px}.mchat::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
 .cb{display:flex;align-items:flex-start;gap:7px}
+
 .cb-time{font-size:9px;color:var(--muted);font-weight:700;min-width:32px;text-align:right;padding-top:5px;flex-shrink:0}
+
 .cb-bub{background:#1c2840;border-radius:4px 14px 14px 14px;padding:7px 11px;font-size:12px;line-height:1.45;color:#c9d1d9;max-width:calc(100% - 45px)}
+
 .cb.cb-goal{max-width:100%;margin:5px 0}
+
 .cb.cb-goal .cb-bub{background:linear-gradient(135deg,rgba(0,166,80,.22),rgba(255,153,0,.14));border:1px solid rgba(0,166,80,.5);border-radius:10px;font-weight:700;font-size:13px;color:#fff;width:100%;text-align:center;padding:11px 14px}
+
 .cb.cb-yellow .cb-bub{background:rgba(255,200,0,.1);border-left:3px solid #ffc800;border-radius:4px 10px 10px 4px}
+
 .cb.cb-red .cb-bub{background:rgba(204,12,57,.12);border-left:3px solid var(--red);border-radius:4px 10px 10px 4px}
+
 .cb.cb-sub .cb-bub{background:rgba(0,168,225,.07);border-left:3px solid var(--blue);border-radius:4px 10px 10px 4px;color:var(--muted);font-size:11px}
+
 .cb.cb-attempt .cb-bub{color:#7a8490;font-size:11px}
+
 .cb-sep{align-self:center;background:rgba(255,255,255,.06);border-radius:20px;padding:3px 16px;font-size:10px;color:var(--muted);letter-spacing:.5px;margin:5px 0}
+
 .mchat-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:10px;color:var(--muted);font-size:12px}
 
 
+
+
+
 /* ── Video strip ── */
+
 .vid-strip{display:flex;gap:8px;overflow-x:auto;padding:6px 2px 2px;scrollbar-width:none;margin-top:6px;min-height:0}
+
 .vid-strip::-webkit-scrollbar{display:none}
+
 .vid-card{flex-shrink:0;width:110px;cursor:pointer;border-radius:8px;overflow:hidden;border:1px solid var(--border);background:#111827;transition:transform .15s,box-shadow .15s}
+
 .vid-card:active{transform:scale(.97)}
+
 .vid-card-img{width:100%;height:62px;object-fit:cover;display:block;background:#1a2030}
+
 .vid-card-ttl{font-size:9px;color:var(--text);padding:4px 5px 2px;line-height:1.3;height:32px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+
 .vid-card-dur{font-size:8px;color:var(--muted);padding:0 5px 5px;display:flex;align-items:center;gap:3px}
+
 .vid-card-dur::before{content:'▶';font-size:7px;color:var(--orange)}
+
 /* Goal play button */
+
 .cb-play{background:rgba(0,166,80,.22);border:1px solid rgba(0,166,80,.55);color:#7aecaa;font-size:11px;padding:3px 10px 3px 8px;border-radius:20px;cursor:pointer;margin-top:6px;display:inline-flex;align-items:center;gap:4px;font-weight:700;transition:all .15s;line-height:1.4}
+
 .cb-play:active{transform:scale(.95);background:rgba(0,166,80,.38)}
+
 /* Video overlay */
+
 .vid-overlay{display:none;position:fixed;inset:0;background:#000;z-index:600;flex-direction:column;overscroll-behavior:contain}
+
 .vid-overlay.open{display:flex}
+
 .vid-ov-hdr{display:flex;align-items:center;gap:10px;padding:12px 14px;background:rgba(13,17,23,.95);border-bottom:1px solid var(--border);flex-shrink:0}
+
 .vid-ov-ttl{font-size:12px;font-weight:700;color:var(--text);flex:1;line-height:1.35}
+
 .vid-ov-close{background:rgba(255,255,255,.1);border:none;color:var(--text);width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer;flex-shrink:0}
+
 .vid-ov-body{flex:1;display:flex;align-items:center;justify-content:center;background:#000;overflow:hidden}
+
 .vid-ov-body video{width:100%;max-height:100%;outline:none}
+
 .vid-ov-fb{display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:14px;color:var(--muted);font-size:13px;text-align:center;padding:20px}
+
 .vid-ov-fb a{color:var(--orange);text-decoration:underline}
 
+
+
 </style>
+
 </head>
+
 <body>
+
 <div class="hdr">
+
   <div class="hdr-inner">
+
     <div class="hdr-top">
+
       <div class="hdr-left">
+
         <span class="hdr-ball">&#x26BD;</span>
+
         <div class="hdr-titles">
+
           <div class="htitle">COPA DO MUNDO 2026</div>
+
           <div class="hsub">&#127482;&#127480; EUA &nbsp;&bull;&nbsp; &#127474;&#127485; M&eacute;xico &nbsp;&bull;&nbsp; &#127464;&#127462; Canad&aacute; &nbsp;&bull;&nbsp; 11 Jun &ndash; 19 Jul</div>
+
         </div>
+
       </div>
+
       <div class="hdr-right">
+
         <div class="ldot" id="liveDot"></div>
+
         <button class="bnotif" id="btnNotif" onclick="toggleNotif()">&#128276; Gols</button>
+
       </div>
+
     </div>
+
     <div class="hdr-strip">
+
       <div class="hdr-author">by Adriano Vieira</div>
+
       <div style="display:flex;align-items:center;gap:8px">
+
         <span id="liveMatchBadge" style="display:none;background:rgba(204,12,57,.2);border:1px solid var(--red);border-radius:6px;padding:3px 8px;font-size:10px;color:var(--red);font-weight:700">&#11044; AO VIVO</span>
+
         <div class="hdr-date-badge" id="hdrClock">&#9201; --:--</div>
+
       </div>
+
     </div>
+
   </div>
+
 </div>
+
 <div class="rbar">
+
   <span id="lastUpdate">Carregando dados...</span>
+
   <button class="rbtn" onclick="loadAll()">&#8635; Atualizar</button>
+
 </div>
+
 <div class="tabs">
+
   <div class="tab active" onclick="goP(0,this)">🏆 Grupos</div>
+
   <div class="tab" onclick="goP(1,this)">📅 Jogos</div>
+
   <div class="tab" onclick="goP(2,this)">⚽ Artilharia</div>
+
   <div class="tab" onclick="goP(3,this)">🗂 Chaveamento</div>
+
   <div class="tab" onclick="goP(4,this)">📊 Insights</div>
+
 </div>
+
 <div class="toast" id="toast"></div>
+
 <div id="p0" class="panel active"><div class="lod" id="loadMsg"><div class="spin"></div>Buscando dados ao vivo da Copa 2026...</div><div id="gContent"></div></div>
+
 <div id="p1" class="panel">
+
   <div class="fbar">
+
     <button class="fb active" onclick="filt('all',this)">Todos</button>
+
     <button class="fb" onclick="filt('live',this)">🔴 Ao Vivo</button>
+
     <button class="fb" onclick="filt('today',this)">Hoje</button>
+
     <button class="fb" onclick="filt('upcoming',this)">Próximos</button>
+
     <button class="fb" onclick="filt('finished',this)">Encerrados</button>
+
   </div>
+
   <div id="mContent"><div class="lod"><div class="spin"></div></div></div>
+
 </div>
+
 <div id="p2" class="panel"><div id="aContent"><div class="lod"><div class="spin"></div></div></div></div>
+
 <div id="p3" class="panel"><div id="cContent"><div class="lod"><div class="spin"></div></div></div></div>
+
 <div id="p4" class="panel"><div id="iContent"><div class="lod"><div class="spin"></div></div></div></div>
+
 <div class="bnav">
+
   <div class="bi2 active" id="nav0" onclick="goP(0,null,1)"><div class="bic">🏆</div><div class="bla">Grupos</div></div>
+
   <div class="bi2" id="nav1" onclick="goP(1,null,1)"><div class="bic">📅</div><div class="bla">Jogos</div></div>
+
   <div class="bi2" id="nav2" onclick="goP(2,null,1)"><div class="bic">⚽</div><div class="bla">Artilharia</div></div>
+
   <div class="bi2" id="nav3" onclick="goP(3,null,1)"><div class="bic">🗂</div><div class="bla">Chaveamento</div></div>
+
   <div class="bi2" id="nav4" onclick="goP(4,null,1)"><div class="bic">📊</div><div class="bla">Insights</div></div>
+
 </div>
+
 <script>
-var BAKED={"teams":[{"id":"1","name_en":"Mexico","flag":"https://flagcdn.com/w80/mx.png","groups":"A"},{"id":"2","name_en":"South Africa","flag":"https://flagcdn.com/w80/za.png","groups":"A"},{"id":"3","name_en":"South Korea","flag":"https://flagcdn.com/w80/kr.png","groups":"A"},{"id":"4","name_en":"Czech Republic","flag":"https://flagcdn.com/w80/cz.png","groups":"A"},{"id":"5","name_en":"Canada","flag":"https://flagcdn.com/w80/ca.png","groups":"B"},{"id":"6","name_en":"Bosnia and Herzegovina","flag":"https://flagcdn.com/w80/ba.png","groups":"B"},{"id":"7","name_en":"Qatar","flag":"https://flagcdn.com/w80/qa.png","groups":"B"},{"id":"8","name_en":"Switzerland","flag":"https://flagcdn.com/w80/ch.png","groups":"B"},{"id":"9","name_en":"Brazil","flag":"https://flagcdn.com/w80/br.png","groups":"C"},{"id":"10","name_en":"Morocco","flag":"https://flagcdn.com/w80/ma.png","groups":"C"},{"id":"11","name_en":"Haiti","flag":"https://flagcdn.com/w80/ht.png","groups":"C"},{"id":"12","name_en":"Scotland","flag":"https://flagcdn.com/w80/gb-sct.png","groups":"C"},{"id":"13","name_en":"United States","flag":"https://flagcdn.com/w80/us.png","groups":"D"},{"id":"14","name_en":"Paraguay","flag":"https://flagcdn.com/w80/py.png","groups":"D"},{"id":"15","name_en":"Australia","flag":"https://flagcdn.com/w80/au.png","groups":"D"},{"id":"16","name_en":"Turkey","flag":"https://flagcdn.com/w80/tr.png","groups":"D"},{"id":"17","name_en":"Germany","flag":"https://flagcdn.com/w80/de.png","groups":"E"},{"id":"18","name_en":"Curaçao","flag":"https://flagcdn.com/w80/cw.png","groups":"E"},{"id":"19","name_en":"Ivory Coast","flag":"https://flagcdn.com/w80/ci.png","groups":"E"},{"id":"20","name_en":"Ecuador","flag":"https://flagcdn.com/w80/ec.png","groups":"E"},{"id":"21","name_en":"Netherlands","flag":"https://flagcdn.com/w80/nl.png","groups":"F"},{"id":"22","name_en":"Japan","flag":"https://flagcdn.com/w80/jp.png","groups":"F"},{"id":"23","name_en":"Sweden","flag":"https://flagcdn.com/w80/se.png","groups":"F"},{"id":"24","name_en":"Tunisia","flag":"https://flagcdn.com/w80/tn.png","groups":"F"},{"id":"25","name_en":"Belgium","flag":"https://flagcdn.com/w80/be.png","groups":"G"},{"id":"26","name_en":"Egypt","flag":"https://flagcdn.com/w80/eg.png","groups":"G"},{"id":"27","name_en":"Iran","flag":"https://flagcdn.com/w80/ir.png","groups":"G"},{"id":"28","name_en":"New Zealand","flag":"https://flagcdn.com/w80/nz.png","groups":"G"},{"id":"29","name_en":"Spain","flag":"https://flagcdn.com/w80/es.png","groups":"H"},{"id":"30","name_en":"Cape Verde","flag":"https://flagcdn.com/w80/cv.png","groups":"H"},{"id":"31","name_en":"Saudi Arabia","flag":"https://flagcdn.com/w80/sa.png","groups":"H"},{"id":"32","name_en":"Uruguay","flag":"https://flagcdn.com/w80/uy.png","groups":"H"},{"id":"33","name_en":"France","flag":"https://flagcdn.com/w80/fr.png","groups":"I"},{"id":"34","name_en":"Senegal","flag":"https://flagcdn.com/w80/sn.png","groups":"I"},{"id":"35","name_en":"Iraq","flag":"https://flagcdn.com/w80/iq.png","groups":"I"},{"id":"36","name_en":"Norway","flag":"https://flagcdn.com/w80/no.png","groups":"I"},{"id":"37","name_en":"Argentina","flag":"https://flagcdn.com/w80/ar.png","groups":"J"},{"id":"38","name_en":"Algeria","flag":"https://flagcdn.com/w80/dz.png","groups":"J"},{"id":"39","name_en":"Austria","flag":"https://flagcdn.com/w80/at.png","groups":"J"},{"id":"40","name_en":"Jordan","flag":"https://flagcdn.com/w80/jo.png","groups":"J"},{"id":"41","name_en":"Portugal","flag":"https://flagcdn.com/w80/pt.png","groups":"K"},{"id":"42","name_en":"DR Congo","flag":"https://flagcdn.com/w80/cd.png","groups":"K"},{"id":"43","name_en":"Uzbekistan","flag":"https://flagcdn.com/w80/uz.png","groups":"K"},{"id":"44","name_en":"Colombia","flag":"https://flagcdn.com/w80/co.png","groups":"K"},{"id":"45","name_en":"England","flag":"https://flagcdn.com/w80/gb-eng.png","groups":"L"},{"id":"46","name_en":"Croatia","flag":"https://flagcdn.com/w80/hr.png","groups":"L"},{"id":"47","name_en":"Ghana","flag":"https://flagcdn.com/w80/gh.png","groups":"L"},{"id":"48","name_en":"Panama","flag":"https://flagcdn.com/w80/pa.png","groups":"L"}],"groups":[{"name":"A","teams":[{"team_id":"1","mp":"1","w":"1","l":"0","d":"0","pts":"3","gf":"2","ga":"0","gd":"2"},{"team_id":"2","mp":"1","w":"0","l":"1","d":"0","pts":"0","gf":"0","ga":"2","gd":"-2"},{"team_id":"3","mp":"1","w":"1","l":"0","d":"0","pts":"3","gf":"2","ga":"1","gd":"1"},{"team_id":"4","mp":"1","w":"0","l":"1","d":"0","pts":"0","gf":"1","ga":"2","gd":"-1"}]},{"name":"B","teams":[{"team_id":"5","mp":"1","w":"0","l":"0","d":"1","pts":"1","gf":"1","ga":"1","gd":"0"},{"team_id":"6","mp":"1","w":"0","l":"0","d":"1","pts":"1","gf":"1","ga":"1","gd":"0"},{"team_id":"7","mp":"1","w":"0","l":"0","d":"1","pts":"1","gf":"1","ga":"1","gd":"0"},{"team_id":"8","mp":"1","w":"0","l":"0","d":"1","pts":"1","gf":"1","ga":"1","gd":"0"}]},{"name":"C","teams":[{"team_id":"9","mp":"1","w":"0","l":"0","d":"1","pts":"1","gf":"1","ga":"1","gd":"0"},{"team_id":"10","mp":"1","w":"0","l":"0","d":"1","pts":"1","gf":"1","ga":"1","gd":"0"},{"team_id":"11","mp":"1","w":"0","l":"1","d":"0","pts":"0","gf":"0","ga":"1","gd":"-1"},{"team_id":"12","mp":"1","w":"1","l":"0","d":"0","pts":"3","gf":"1","ga":"0","gd":"1"}]},{"name":"D","teams":[{"team_id":"13","mp":"1","w":"1","l":"0","d":"0","pts":"3","gf":"4","ga":"1","gd":"3"},{"team_id":"14","mp":"1","w":"0","l":"1","d":"0","pts":"0","gf":"1","ga":"4","gd":"-3"},{"team_id":"15","mp":"1","w":"1","l":"0","d":"0","pts":"3","gf":"2","ga":"0","gd":"2"},{"team_id":"16","mp":"1","w":"0","l":"1","d":"0","pts":"0","gf":"0","ga":"2","gd":"-2"}]},{"name":"E","teams":[{"team_id":"17","mp":"1","w":"1","l":"0","d":"0","pts":"3","gf":"7","ga":"1","gd":"6"},{"team_id":"18","mp":"1","w":"0","l":"1","d":"0","pts":"0","gf":"1","ga":"7","gd":"-6"},{"team_id":"19","mp":"1","w":"1","l":"0","d":"0","pts":"3","gf":"1","ga":"0","gd":"1"},{"team_id":"20","mp":"1","w":"0","l":"1","d":"0","pts":"0","gf":"0","ga":"1","gd":"-1"}]},{"name":"F","teams":[{"team_id":"21","mp":"1","w":"0","l":"0","d":"1","pts":"1","gf":"2","ga":"2","gd":"0"},{"team_id":"22","mp":"1","w":"0","l":"0","d":"1","pts":"1","gf":"2","ga":"2","gd":"0"},{"team_id":"23","mp":"1","w":"1","l":"0","d":"0","pts":"3","gf":"5","ga":"1","gd":"4"},{"team_id":"24","mp":"1","w":"0","l":"1","d":"0","pts":"0","gf":"1","ga":"5","gd":"-4"}]},{"name":"G","teams":[{"team_id":"25","mp":"1","w":"0","l":"0","d":"1","pts":"1","gf":"1","ga":"1","gd":"0"},{"team_id":"26","mp":"1","w":"0","l":"0","d":"1","pts":"1","gf":"1","ga":"1","gd":"0"},{"team_id":"27","mp":"1","w":"0","l":"0","d":"1","pts":"1","gf":"2","ga":"2","gd":"0"},{"team_id":"28","mp":"1","w":"0","l":"0","d":"1","pts":"1","gf":"2","ga":"2","gd":"0"}]},{"name":"H","teams":[{"team_id":"29","mp":"1","w":"0","l":"0","d":"1","pts":"1","gf":"0","ga":"0","gd":"0"},{"team_id":"30","mp":"1","w":"0","l":"0","d":"1","pts":"1","gf":"0","ga":"0","gd":"0"},{"team_id":"31","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"},{"team_id":"32","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"}]},{"name":"I","teams":[{"team_id":"33","mp":"1","w":"1","l":"0","d":"0","pts":"3","gf":"3","ga":"1","gd":"2"},{"team_id":"34","mp":"1","w":"0","l":"1","d":"0","pts":"0","gf":"1","ga":"3","gd":"-2"},{"team_id":"35","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"},{"team_id":"36","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"}]},{"name":"J","teams":[{"team_id":"37","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"},{"team_id":"38","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"},{"team_id":"39","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"},{"team_id":"40","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"}]},{"name":"K","teams":[{"team_id":"41","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"},{"team_id":"42","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"},{"team_id":"43","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"},{"team_id":"44","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"}]},{"name":"L","teams":[{"team_id":"45","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"},{"team_id":"46","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"},{"team_id":"47","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"},{"team_id":"48","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"}]}],"games":[{"id":"6","home_team_id":"15","away_team_id":"16","home_score":"2","away_score":"0","home_scorers":"{\"Nestory Irankunda 27'\",\"C. Metcalfe 75'\"}","away_scorers":"null","group":"D","matchday":"1","local_date":"06/13/2026 21:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"Australia","away_team_name_en":"Turkey"},{"id":"8","home_team_id":"7","away_team_id":"8","home_score":"1","away_score":"1","home_scorers":"{\"B. Khoukhi 90'+5'\"}","away_scorers":"{\"Breel Embolo 17' (p)\"}","group":"B","matchday":"1","local_date":"06/13/2026 12:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"Qatar","away_team_name_en":"Switzerland"},{"id":"31","home_team_id":"13","away_team_id":"15","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"D","matchday":"2","local_date":"06/19/2026 12:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"United States","away_team_name_en":"Australia"},{"id":"33","home_team_id":"17","away_team_id":"19","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"E","matchday":"2","local_date":"06/20/2026 16:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Germany","away_team_name_en":"Ivory Coast"},{"id":"35","home_team_id":"21","away_team_id":"23","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"F","matchday":"2","local_date":"06/20/2026 12:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Netherlands","away_team_name_en":"Sweden"},{"id":"41","home_team_id":"33","away_team_id":"35","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"I","matchday":"2","local_date":"06/22/2026 17:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"France","away_team_name_en":"Iraq"},{"id":"42","home_team_id":"36","away_team_id":"34","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"I","matchday":"2","local_date":"06/22/2026 20:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Norway","away_team_name_en":"Senegal"},{"id":"59","home_team_id":"22","away_team_id":"23","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"F","matchday":"3","local_date":"06/25/2026 18:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Japan","away_team_name_en":"Sweden"},{"id":"95","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R16","matchday":"5","local_date":"07/07/2026 12:00","finished":"FALSE","time_elapsed":"notstarted","type":"r16"},{"id":"101","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"SF","matchday":"7","local_date":"07/14/2026 14:00","finished":"FALSE","time_elapsed":"notstarted","type":"sf"},{"id":"102","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"SF","matchday":"7","local_date":"07/15/2026 15:00","finished":"FALSE","time_elapsed":"notstarted","type":"sf"},{"id":"5","home_team_id":"11","away_team_id":"12","home_score":"0","away_score":"1","home_scorers":"null","away_scorers":"{\"J. McGinn 28'\"}","group":"C","matchday":"1","local_date":"06/13/2026 21:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"Haiti","away_team_name_en":"Scotland"},{"id":"22","home_team_id":"45","away_team_id":"46","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"L","matchday":"1","local_date":"06/17/2026 15:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"England","away_team_name_en":"Croatia"},{"id":"39","home_team_id":"29","away_team_id":"31","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"H","matchday":"2","local_date":"06/21/2026 12:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Spain","away_team_name_en":"Saudi Arabia"},{"id":"44","home_team_id":"40","away_team_id":"38","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"J","matchday":"2","local_date":"06/22/2026 20:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Jordan","away_team_name_en":"Algeria"},{"id":"45","home_team_id":"41","away_team_id":"43","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"K","matchday":"2","local_date":"06/23/2026 12:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Portugal","away_team_name_en":"Uzbekistan"},{"id":"46","home_team_id":"48","away_team_id":"46","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"L","matchday":"2","local_date":"06/23/2026 19:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Panama","away_team_name_en":"Croatia"},{"id":"52","home_team_id":"4","away_team_id":"1","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"A","matchday":"3","local_date":"06/24/2026 19:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Czech Republic","away_team_name_en":"Mexico"},{"id":"60","home_team_id":"24","away_team_id":"21","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"F","matchday":"3","local_date":"06/25/2026 18:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Tunisia","away_team_name_en":"Netherlands"},{"id":"61","home_team_id":"34","away_team_id":"35","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"I","matchday":"3","local_date":"06/26/2026 15:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Senegal","away_team_name_en":"Iraq"},{"id":"67","home_team_id":"48","away_team_id":"45","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"L","matchday":"3","local_date":"06/27/2026 17:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Panama","away_team_name_en":"England"},{"id":"72","home_team_id":"42","away_team_id":"43","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"K","matchday":"3","local_date":"06/27/2026 19:30","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Democratic Republic of the Congo","away_team_name_en":"Uzbekistan"},{"id":"86","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R32","matchday":"4","local_date":"07/03/2026 18:00","finished":"FALSE","time_elapsed":"notstarted","type":"r32"},{"id":"88","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R32","matchday":"4","local_date":"07/03/2026 13:00","finished":"FALSE","time_elapsed":"notstarted","type":"r32"},{"id":"100","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"QF","matchday":"6","local_date":"07/11/2026 20:00","finished":"FALSE","time_elapsed":"notstarted","type":"qf"},{"id":"2","home_team_id":"3","away_team_id":"4","home_score":"2","away_score":"1","home_scorers":"{\"I.B. Hwang 67'\",\"H.G. Oh 80'\"}","away_scorers":"{\"L. Krejčí 59'\"}","group":"A","matchday":"1","local_date":"06/11/2026 20:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"South Korea","away_team_name_en":"Czech Republic"},{"id":"4","home_team_id":"13","away_team_id":"14","home_score":"4","away_score":"1","home_scorers":"{\"D. Bobadilla 7'(OG)\",\"F. Balogun 31'\",\"F. Balogun 45'+5'\",\"G. Reyna 90'+8'\"}","away_scorers":"{\"Maurício 73'\"}","group":"D","matchday":"1","local_date":"06/12/2026 18:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"United States","away_team_name_en":"Paraguay"},{"id":"17","home_team_id":"33","away_team_id":"34","home_score":"3","away_score":"1","home_scorers":"{\"K. Mbappé 66'\",\"B. Barcola 82'\",\"K. Mbappé 90+6'\"}","away_scorers":"{\"I. Mbaye 90+5'\"}","group":"I","matchday":"1","local_date":"06/16/2026 15:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"France","away_team_name_en":"Senegal"},{"id":"18","home_team_id":"35","away_team_id":"36","home_score":"1","away_score":"4","home_scorers":"{\"Aimn Hsin 39'\"}","away_scorers":"{\"Arling Halnd 29'\",\"Arling Halnd 43'\",\"Liv Avstigard 76'\",\"Aimn Hsin 90+7'\"}","group":"I","matchday":"1","local_date":"06/16/2026 18:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"Iraq","away_team_name_en":"Norway"},{"id":"21","home_team_id":"41","away_team_id":"42","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"K","matchday":"1","local_date":"06/17/2026 12:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Portugal","away_team_name_en":"Democratic Republic of the Congo"},{"id":"37","home_team_id":"25","away_team_id":"27","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"G","matchday":"2","local_date":"06/21/2026 12:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Belgium","away_team_name_en":"Iran"},{"id":"50","home_team_id":"10","away_team_id":"11","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"C","matchday":"3","local_date":"06/24/2026 18:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Morocco","away_team_name_en":"Haiti"},{"id":"51","home_team_id":"2","away_team_id":"3","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"A","matchday":"3","local_date":"06/24/2026 19:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"South Africa","away_team_name_en":"South Korea"},{"id":"87","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R32","matchday":"4","local_date":"07/03/2026 20:30","finished":"FALSE","time_elapsed":"notstarted","type":"r32"},{"id":"98","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"QF","matchday":"6","local_date":"07/10/2026 12:00","finished":"FALSE","time_elapsed":"notstarted","type":"qf"},{"id":"9","home_team_id":"19","away_team_id":"20","home_score":"1","away_score":"0","home_scorers":"{\"A. Diallo 90'\"}","away_scorers":"null","group":"E","matchday":"1","local_date":"06/14/2026 19:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"Ivory Coast","away_team_name_en":"Ecuador"},{"id":"10","home_team_id":"17","away_team_id":"18","home_score":"7","away_score":"1","home_scorers":"{\"Felix Nmecha 7'\",\"N. Schlotterbeck 38'\",\"K. Havertz 45'+5'(p)\",\"J. Musiala 47'\",\"N. Brown 68'\",\"D. Undav 78'\",\"K. Havertz 88'\"}","away_scorers":"{\"L. Comenencia 21'\"}","group":"E","matchday":"1","local_date":"06/14/2026 12:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"Germany","away_team_name_en":"Curaçao"},{"id":"12","home_team_id":"23","away_team_id":"24","home_score":"5","away_score":"1","home_scorers":"{\"Y.Ayari 7'\",\"A. Isak 30'\",\"V. Gyökeres 59'\",\"M. Svanberg 84'\",\"Y.Ayari 90'+6'\"}","away_scorers":"{\"O. Rekik 43'\"}","group":"F","matchday":"1","local_date":"06/14/2026 20:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"Sweden","away_team_name_en":"Tunisia"},{"id":"25","home_team_id":"1","away_team_id":"3","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"A","matchday":"2","local_date":"06/18/2026 19:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Mexico","away_team_name_en":"South Korea"},{"id":"27","home_team_id":"5","away_team_id":"7","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"B","matchday":"2","local_date":"06/18/2026 15:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Canada","away_team_name_en":"Qatar"},{"id":"30","home_team_id":"12","away_team_id":"10","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"C","matchday":"2","local_date":"06/19/2026 18:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Scotland","away_team_name_en":"Morocco"},{"id":"32","home_team_id":"16","away_team_id":"14","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"D","matchday":"2","local_date":"06/19/2026 20:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Turkey","away_team_name_en":"Paraguay"},{"id":"43","home_team_id":"37","away_team_id":"39","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"J","matchday":"2","local_date":"06/22/2026 12:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Argentina","away_team_name_en":"Austria"},{"id":"49","home_team_id":"12","away_team_id":"9","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"C","matchday":"3","local_date":"06/24/2026 18:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Scotland","away_team_name_en":"Brazil"},{"id":"53","home_team_id":"6","away_team_id":"7","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"B","matchday":"3","local_date":"06/24/2026 12:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Bosnia and Herzegovina","away_team_name_en":"Qatar"},{"id":"58","home_team_id":"16","away_team_id":"13","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"D","matchday":"3","local_date":"06/25/2026 19:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Turkey","away_team_name_en":"United States"},{"id":"62","home_team_id":"36","away_team_id":"33","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"I","matchday":"3","local_date":"06/26/2026 15:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Norway","away_team_name_en":"France"},{"id":"63","home_team_id":"26","away_team_id":"27","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"G","matchday":"3","local_date":"06/26/2026 20:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Egypt","away_team_name_en":"Iran"},{"id":"65","home_team_id":"30","away_team_id":"31","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"H","matchday":"3","local_date":"06/26/2026 19:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Cape Verde","away_team_name_en":"Saudi Arabia"},{"id":"66","home_team_id":"32","away_team_id":"29","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"H","matchday":"3","local_date":"06/26/2026 18:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Uruguay","away_team_name_en":"Spain"},{"id":"70","home_team_id":"40","away_team_id":"37","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"J","matchday":"3","local_date":"06/27/2026 21:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Jordan","away_team_name_en":"Argentina"},{"id":"76","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R32","matchday":"4","local_date":"06/29/2026 12:00","finished":"FALSE","time_elapsed":"notstarted","type":"r32"},{"id":"83","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R32","matchday":"4","local_date":"07/02/2026 19:00","finished":"FALSE","time_elapsed":"notstarted","type":"r32"},{"id":"85","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R32","matchday":"4","local_date":"07/02/2026 20:00","finished":"FALSE","time_elapsed":"notstarted","type":"r32"},{"id":"93","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R16","matchday":"5","local_date":"07/06/2026 14:00","finished":"FALSE","time_elapsed":"notstarted","type":"r16"},{"id":"96","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R16","matchday":"5","local_date":"07/07/2026 13:00","finished":"FALSE","time_elapsed":"notstarted","type":"r16"},{"id":"1","home_team_id":"1","away_team_id":"2","home_score":"2","away_score":"0","home_scorers":"{\"J. Quiñones 9'\",\"R. Jiménez 67'\"}","away_scorers":"null","group":"A","matchday":"1","local_date":"06/11/2026 13:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"Mexico","away_team_name_en":"South Africa"},{"id":"7","home_team_id":"9","away_team_id":"10","home_score":"1","away_score":"1","home_scorers":"{\"V. Júnior 32'\"}","away_scorers":"{\"I. Saibari 21'\"}","group":"C","matchday":"1","local_date":"06/13/2026 18:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"Brazil","away_team_name_en":"Morocco"},{"id":"11","home_team_id":"21","away_team_id":"22","home_score":"2","away_score":"2","home_scorers":"{\"Virgil van Dijk 51'\",\"C. Summerville 64'\"}","away_scorers":"{\"K. Nakamura 57'\",\"K. Ogawa 89'\"}","group":"F","matchday":"1","local_date":"06/14/2026 15:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"Netherlands","away_team_name_en":"Japan"},{"id":"26","home_team_id":"8","away_team_id":"6","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"B","matchday":"2","local_date":"06/18/2026 12:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Switzerland","away_team_name_en":"Bosnia and Herzegovina"},{"id":"29","home_team_id":"9","away_team_id":"11","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"C","matchday":"2","local_date":"06/19/2026 21:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Brazil","away_team_name_en":"Haiti"},{"id":"36","home_team_id":"24","away_team_id":"22","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"F","matchday":"2","local_date":"06/20/2026 22:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Tunisia","away_team_name_en":"Japan"},{"id":"38","home_team_id":"28","away_team_id":"26","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"G","matchday":"2","local_date":"06/21/2026 18:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"New Zealand","away_team_name_en":"Egypt"},{"id":"40","home_team_id":"32","away_team_id":"30","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"H","matchday":"2","local_date":"06/21/2026 18:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Uruguay","away_team_name_en":"Cape Verde"},{"id":"47","home_team_id":"44","away_team_id":"42","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"K","matchday":"2","local_date":"06/23/2026 20:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Colombia","away_team_name_en":"Democratic Republic of the Congo"},{"id":"71","home_team_id":"44","away_team_id":"41","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"K","matchday":"3","local_date":"06/27/2026 19:30","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Colombia","away_team_name_en":"Portugal"},{"id":"73","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R32","matchday":"4","local_date":"06/28/2026 12:00","finished":"FALSE","time_elapsed":"notstarted","type":"r32"},{"id":"77","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R32","matchday":"4","local_date":"06/30/2026 17:00","finished":"FALSE","time_elapsed":"notstarted","type":"r32"},{"id":"84","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R32","matchday":"4","local_date":"07/02/2026 12:00","finished":"FALSE","time_elapsed":"notstarted","type":"r32"},{"id":"90","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R16","matchday":"5","local_date":"07/04/2026 12:00","finished":"FALSE","time_elapsed":"notstarted","type":"r16"},{"id":"92","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R16","matchday":"5","local_date":"07/05/2026 18:00","finished":"FALSE","time_elapsed":"notstarted","type":"r16"},{"id":"94","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R16","matchday":"5","local_date":"07/06/2026 17:00","finished":"FALSE","time_elapsed":"notstarted","type":"r16"},{"id":"14","home_team_id":"29","away_team_id":"30","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"H","matchday":"1","local_date":"06/15/2026 12:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"Spain","away_team_name_en":"Cape Verde"},{"id":"16","home_team_id":"31","away_team_id":"32","home_score":"1","away_score":"1","home_scorers":"{\"Abdulelah Al-Amri 41'\"}","away_scorers":"{\"Maximiliano Araújo 80'\"}","group":"H","matchday":"1","local_date":"06/15/2026 18:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"Saudi Arabia","away_team_name_en":"Uruguay"},{"id":"20","home_team_id":"39","away_team_id":"40","home_score":"null","away_score":"null","home_scorers":"null","away_scorers":"null","group":"J","matchday":"1","local_date":"06/16/2026 21:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Austria","away_team_name_en":"Jordan"},{"id":"23","home_team_id":"43","away_team_id":"44","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"K","matchday":"1","local_date":"06/17/2026 20:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Uzbekistan","away_team_name_en":"Colombia"},{"id":"91","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R16","matchday":"5","local_date":"07/05/2026 16:00","finished":"FALSE","time_elapsed":"notstarted","type":"r16"},{"id":"97","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"QF","matchday":"6","local_date":"07/09/2026 16:00","finished":"FALSE","time_elapsed":"notstarted","type":"qf"},{"id":"104","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"FINAL","matchday":"9","local_date":"07/19/2026 15:00","finished":"FALSE","time_elapsed":"notstarted","type":"final"},{"id":"3","home_team_id":"5","away_team_id":"6","home_score":"1","away_score":"1","home_scorers":"{\"C. Larin 11'\"}","away_scorers":"{\"Jovo Lukić 21'\"}","group":"B","matchday":"1","local_date":"06/12/2026 15:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"Canada","away_team_name_en":"Bosnia and Herzegovina"},{"id":"13","home_team_id":"27","away_team_id":"28","home_score":"2","away_score":"2","home_scorers":"{\"Ramin Rezaiian 32'\",\"Mohammad Mohebi 64'\"}","away_scorers":"{\"Elijah Just 7'\",\"Elijah Just 54'\"}","group":"G","matchday":"1","local_date":"06/15/2026 18:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"Iran","away_team_name_en":"New Zealand"},{"id":"19","home_team_id":"37","away_team_id":"38","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"J","matchday":"1","local_date":"06/16/2026 20:00","finished":"FALSE","time_elapsed":"live","type":"group","home_team_name_en":"Argentina","away_team_name_en":"Algeria"},{"id":"24","home_team_id":"47","away_team_id":"48","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"L","matchday":"1","local_date":"06/17/2026 19:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Ghana","away_team_name_en":"Panama"},{"id":"28","home_team_id":"4","away_team_id":"2","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"A","matchday":"2","local_date":"06/18/2026 12:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Czech Republic","away_team_name_en":"South Africa"},{"id":"48","home_team_id":"45","away_team_id":"47","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"L","matchday":"2","local_date":"06/23/2026 16:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"England","away_team_name_en":"Ghana"},{"id":"55","home_team_id":"18","away_team_id":"19","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"E","matchday":"3","local_date":"06/25/2026 16:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Curaçao","away_team_name_en":"Ivory Coast"},{"id":"56","home_team_id":"20","away_team_id":"17","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"E","matchday":"3","local_date":"06/25/2026 16:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Ecuador","away_team_name_en":"Germany"}],"baked_at":"16/Jun/2026 16:00"};
+
+var BAKED={"teams":[{"id":"1","name_en":"Mexico","flag":"https://flagcdn.com/w80/mx.png","groups":"A"},{"id":"2","name_en":"South Africa","flag":"https://flagcdn.com/w80/za.png","groups":"A"},{"id":"3","name_en":"South Korea","flag":"https://flagcdn.com/w80/kr.png","groups":"A"},{"id":"4","name_en":"Czech Republic","flag":"https://flagcdn.com/w80/cz.png","groups":"A"},{"id":"5","name_en":"Canada","flag":"https://flagcdn.com/w80/ca.png","groups":"B"},{"id":"6","name_en":"Bosnia and Herzegovina","flag":"https://flagcdn.com/w80/ba.png","groups":"B"},{"id":"7","name_en":"Qatar","flag":"https://flagcdn.com/w80/qa.png","groups":"B"},{"id":"8","name_en":"Switzerland","flag":"https://flagcdn.com/w80/ch.png","groups":"B"},{"id":"9","name_en":"Brazil","flag":"https://flagcdn.com/w80/br.png","groups":"C"},{"id":"10","name_en":"Morocco","flag":"https://flagcdn.com/w80/ma.png","groups":"C"},{"id":"11","name_en":"Haiti","flag":"https://flagcdn.com/w80/ht.png","groups":"C"},{"id":"12","name_en":"Scotland","flag":"https://flagcdn.com/w80/gb-sct.png","groups":"C"},{"id":"13","name_en":"United States","flag":"https://flagcdn.com/w80/us.png","groups":"D"},{"id":"14","name_en":"Paraguay","flag":"https://flagcdn.com/w80/py.png","groups":"D"},{"id":"15","name_en":"Australia","flag":"https://flagcdn.com/w80/au.png","groups":"D"},{"id":"16","name_en":"Turkey","flag":"https://flagcdn.com/w80/tr.png","groups":"D"},{"id":"17","name_en":"Germany","flag":"https://flagcdn.com/w80/de.png","groups":"E"},{"id":"18","name_en":"Curaçao","flag":"https://flagcdn.com/w80/cw.png","groups":"E"},{"id":"19","name_en":"Ivory Coast","flag":"https://flagcdn.com/w80/ci.png","groups":"E"},{"id":"20","name_en":"Ecuador","flag":"https://flagcdn.com/w80/ec.png","groups":"E"},{"id":"21","name_en":"Netherlands","flag":"https://flagcdn.com/w80/nl.png","groups":"F"},{"id":"22","name_en":"Japan","flag":"https://flagcdn.com/w80/jp.png","groups":"F"},{"id":"23","name_en":"Sweden","flag":"https://flagcdn.com/w80/se.png","groups":"F"},{"id":"24","name_en":"Tunisia","flag":"https://flagcdn.com/w80/tn.png","groups":"F"},{"id":"25","name_en":"Belgium","flag":"https://flagcdn.com/w80/be.png","groups":"G"},{"id":"26","name_en":"Egypt","flag":"https://flagcdn.com/w80/eg.png","groups":"G"},{"id":"27","name_en":"Iran","flag":"https://flagcdn.com/w80/ir.png","groups":"G"},{"id":"28","name_en":"New Zealand","flag":"https://flagcdn.com/w80/nz.png","groups":"G"},{"id":"29","name_en":"Spain","flag":"https://flagcdn.com/w80/es.png","groups":"H"},{"id":"30","name_en":"Cape Verde","flag":"https://flagcdn.com/w80/cv.png","groups":"H"},{"id":"31","name_en":"Saudi Arabia","flag":"https://flagcdn.com/w80/sa.png","groups":"H"},{"id":"32","name_en":"Uruguay","flag":"https://flagcdn.com/w80/uy.png","groups":"H"},{"id":"33","name_en":"France","flag":"https://flagcdn.com/w80/fr.png","groups":"I"},{"id":"34","name_en":"Senegal","flag":"https://flagcdn.com/w80/sn.png","groups":"I"},{"id":"35","name_en":"Iraq","flag":"https://flagcdn.com/w80/iq.png","groups":"I"},{"id":"36","name_en":"Norway","flag":"https://flagcdn.com/w80/no.png","groups":"I"},{"id":"37","name_en":"Argentina","flag":"https://flagcdn.com/w80/ar.png","groups":"J"},{"id":"38","name_en":"Algeria","flag":"https://flagcdn.com/w80/dz.png","groups":"J"},{"id":"39","name_en":"Austria","flag":"https://flagcdn.com/w80/at.png","groups":"J"},{"id":"40","name_en":"Jordan","flag":"https://flagcdn.com/w80/jo.png","groups":"J"},{"id":"41","name_en":"Portugal","flag":"https://flagcdn.com/w80/pt.png","groups":"K"},{"id":"42","name_en":"DR Congo","flag":"https://flagcdn.com/w80/cd.png","groups":"K"},{"id":"43","name_en":"Uzbekistan","flag":"https://flagcdn.com/w80/uz.png","groups":"K"},{"id":"44","name_en":"Colombia","flag":"https://flagcdn.com/w80/co.png","groups":"K"},{"id":"45","name_en":"England","flag":"https://flagcdn.com/w80/gb-eng.png","groups":"L"},{"id":"46","name_en":"Croatia","flag":"https://flagcdn.com/w80/hr.png","groups":"L"},{"id":"47","name_en":"Ghana","flag":"https://flagcdn.com/w80/gh.png","groups":"L"},{"id":"48","name_en":"Panama","flag":"https://flagcdn.com/w80/pa.png","groups":"L"}],"groups":[{"name":"A","teams":[{"team_id":"1","mp":"1","w":"1","l":"0","d":"0","pts":"3","gf":"2","ga":"0","gd":"2"},{"team_id":"2","mp":"1","w":"0","l":"1","d":"0","pts":"0","gf":"0","ga":"2","gd":"-2"},{"team_id":"3","mp":"1","w":"1","l":"0","d":"0","pts":"3","gf":"2","ga":"1","gd":"1"},{"team_id":"4","mp":"1","w":"0","l":"1","d":"0","pts":"0","gf":"1","ga":"2","gd":"-1"}]},{"name":"B","teams":[{"team_id":"5","mp":"1","w":"0","l":"0","d":"1","pts":"1","gf":"1","ga":"1","gd":"0"},{"team_id":"6","mp":"1","w":"0","l":"0","d":"1","pts":"1","gf":"1","ga":"1","gd":"0"},{"team_id":"7","mp":"1","w":"0","l":"0","d":"1","pts":"1","gf":"1","ga":"1","gd":"0"},{"team_id":"8","mp":"1","w":"0","l":"0","d":"1","pts":"1","gf":"1","ga":"1","gd":"0"}]},{"name":"C","teams":[{"team_id":"9","mp":"1","w":"0","l":"0","d":"1","pts":"1","gf":"1","ga":"1","gd":"0"},{"team_id":"10","mp":"1","w":"0","l":"0","d":"1","pts":"1","gf":"1","ga":"1","gd":"0"},{"team_id":"11","mp":"1","w":"0","l":"1","d":"0","pts":"0","gf":"0","ga":"1","gd":"-1"},{"team_id":"12","mp":"1","w":"1","l":"0","d":"0","pts":"3","gf":"1","ga":"0","gd":"1"}]},{"name":"D","teams":[{"team_id":"13","mp":"1","w":"1","l":"0","d":"0","pts":"3","gf":"4","ga":"1","gd":"3"},{"team_id":"14","mp":"1","w":"0","l":"1","d":"0","pts":"0","gf":"1","ga":"4","gd":"-3"},{"team_id":"15","mp":"1","w":"1","l":"0","d":"0","pts":"3","gf":"2","ga":"0","gd":"2"},{"team_id":"16","mp":"1","w":"0","l":"1","d":"0","pts":"0","gf":"0","ga":"2","gd":"-2"}]},{"name":"E","teams":[{"team_id":"17","mp":"1","w":"1","l":"0","d":"0","pts":"3","gf":"7","ga":"1","gd":"6"},{"team_id":"18","mp":"1","w":"0","l":"1","d":"0","pts":"0","gf":"1","ga":"7","gd":"-6"},{"team_id":"19","mp":"1","w":"1","l":"0","d":"0","pts":"3","gf":"1","ga":"0","gd":"1"},{"team_id":"20","mp":"1","w":"0","l":"1","d":"0","pts":"0","gf":"0","ga":"1","gd":"-1"}]},{"name":"F","teams":[{"team_id":"21","mp":"1","w":"0","l":"0","d":"1","pts":"1","gf":"2","ga":"2","gd":"0"},{"team_id":"22","mp":"1","w":"0","l":"0","d":"1","pts":"1","gf":"2","ga":"2","gd":"0"},{"team_id":"23","mp":"1","w":"1","l":"0","d":"0","pts":"3","gf":"5","ga":"1","gd":"4"},{"team_id":"24","mp":"1","w":"0","l":"1","d":"0","pts":"0","gf":"1","ga":"5","gd":"-4"}]},{"name":"G","teams":[{"team_id":"25","mp":"1","w":"0","l":"0","d":"1","pts":"1","gf":"1","ga":"1","gd":"0"},{"team_id":"26","mp":"1","w":"0","l":"0","d":"1","pts":"1","gf":"1","ga":"1","gd":"0"},{"team_id":"27","mp":"1","w":"0","l":"0","d":"1","pts":"1","gf":"2","ga":"2","gd":"0"},{"team_id":"28","mp":"1","w":"0","l":"0","d":"1","pts":"1","gf":"2","ga":"2","gd":"0"}]},{"name":"H","teams":[{"team_id":"29","mp":"1","w":"0","l":"0","d":"1","pts":"1","gf":"0","ga":"0","gd":"0"},{"team_id":"30","mp":"1","w":"0","l":"0","d":"1","pts":"1","gf":"0","ga":"0","gd":"0"},{"team_id":"31","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"},{"team_id":"32","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"}]},{"name":"I","teams":[{"team_id":"33","mp":"1","w":"1","l":"0","d":"0","pts":"3","gf":"3","ga":"1","gd":"2"},{"team_id":"34","mp":"1","w":"0","l":"1","d":"0","pts":"0","gf":"1","ga":"3","gd":"-2"},{"team_id":"35","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"},{"team_id":"36","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"}]},{"name":"J","teams":[{"team_id":"37","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"},{"team_id":"38","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"},{"team_id":"39","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"},{"team_id":"40","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"}]},{"name":"K","teams":[{"team_id":"41","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"},{"team_id":"42","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"},{"team_id":"43","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"},{"team_id":"44","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"}]},{"name":"L","teams":[{"team_id":"45","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"},{"team_id":"46","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"},{"team_id":"47","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"},{"team_id":"48","mp":"0","w":"0","l":"0","d":"0","pts":"0","gf":"0","ga":"0","gd":"0"}]}],"games":[{"id":"6","home_team_id":"15","away_team_id":"16","home_score":"2","away_score":"0","home_scorers":"{\"Nestory Irankunda 27'\",\"C. Metcalfe 75'\"}","away_scorers":"null","group":"D","matchday":"1","local_date":"06/13/2026 21:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"Australia","away_team_name_en":"Turkey"},{"id":"8","home_team_id":"7","away_team_id":"8","home_score":"1","away_score":"1","home_scorers":"{\"B. Khoukhi 90'+5'\"}","away_scorers":"{\"Breel Embolo 17' (p)\"}","group":"B","matchday":"1","local_date":"06/13/2026 12:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"Qatar","away_team_name_en":"Switzerland"},{"id":"31","home_team_id":"13","away_team_id":"15","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"D","matchday":"2","local_date":"06/19/2026 12:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"United States","away_team_name_en":"Australia"},{"id":"33","home_team_id":"17","away_team_id":"19","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"E","matchday":"2","local_date":"06/20/2026 16:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Germany","away_team_name_en":"Ivory Coast"},{"id":"35","home_team_id":"21","away_team_id":"23","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"F","matchday":"2","local_date":"06/20/2026 12:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Netherlands","away_team_name_en":"Sweden"},{"id":"41","home_team_id":"33","away_team_id":"35","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"I","matchday":"2","local_date":"06/22/2026 17:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"France","away_team_name_en":"Iraq"},{"id":"42","home_team_id":"36","away_team_id":"34","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"I","matchday":"2","local_date":"06/22/2026 20:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Norway","away_team_name_en":"Senegal"},{"id":"59","home_team_id":"22","away_team_id":"23","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"F","matchday":"3","local_date":"06/25/2026 18:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Japan","away_team_name_en":"Sweden"},{"id":"5","home_team_id":"11","away_team_id":"12","home_score":"0","away_score":"1","home_scorers":"null","away_scorers":"{\"J. McGinn 28'\"}","group":"C","matchday":"1","local_date":"06/13/2026 21:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"Haiti","away_team_name_en":"Scotland"},{"id":"22","home_team_id":"45","away_team_id":"46","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"L","matchday":"1","local_date":"06/17/2026 15:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"England","away_team_name_en":"Croatia"},{"id":"39","home_team_id":"29","away_team_id":"31","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"H","matchday":"2","local_date":"06/21/2026 12:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Spain","away_team_name_en":"Saudi Arabia"},{"id":"44","home_team_id":"40","away_team_id":"38","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"J","matchday":"2","local_date":"06/22/2026 20:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Jordan","away_team_name_en":"Algeria"},{"id":"45","home_team_id":"41","away_team_id":"43","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"K","matchday":"2","local_date":"06/23/2026 12:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Portugal","away_team_name_en":"Uzbekistan"},{"id":"46","home_team_id":"48","away_team_id":"46","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"L","matchday":"2","local_date":"06/23/2026 19:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Panama","away_team_name_en":"Croatia"},{"id":"52","home_team_id":"4","away_team_id":"1","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"A","matchday":"3","local_date":"06/24/2026 19:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Czech Republic","away_team_name_en":"Mexico"},{"id":"60","home_team_id":"24","away_team_id":"21","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"F","matchday":"3","local_date":"06/25/2026 18:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Tunisia","away_team_name_en":"Netherlands"},{"id":"61","home_team_id":"34","away_team_id":"35","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"I","matchday":"3","local_date":"06/26/2026 15:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Senegal","away_team_name_en":"Iraq"},{"id":"67","home_team_id":"48","away_team_id":"45","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"L","matchday":"3","local_date":"06/27/2026 17:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Panama","away_team_name_en":"England"},{"id":"72","home_team_id":"42","away_team_id":"43","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"K","matchday":"3","local_date":"06/27/2026 19:30","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Democratic Republic of the Congo","away_team_name_en":"Uzbekistan"},{"id":"2","home_team_id":"3","away_team_id":"4","home_score":"2","away_score":"1","home_scorers":"{\"I.B. Hwang 67'\",\"H.G. Oh 80'\"}","away_scorers":"{\"L. Krejčí 59'\"}","group":"A","matchday":"1","local_date":"06/11/2026 20:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"South Korea","away_team_name_en":"Czech Republic"},{"id":"4","home_team_id":"13","away_team_id":"14","home_score":"4","away_score":"1","home_scorers":"{\"D. Bobadilla 7'(OG)\",\"F. Balogun 31'\",\"F. Balogun 45'+5'\",\"G. Reyna 90'+8'\"}","away_scorers":"{\"Maurício 73'\"}","group":"D","matchday":"1","local_date":"06/12/2026 18:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"United States","away_team_name_en":"Paraguay"},{"id":"17","home_team_id":"33","away_team_id":"34","home_score":"3","away_score":"1","home_scorers":"{\"K. Mbappé 66'\",\"B. Barcola 82'\",\"K. Mbappé 90+6'\"}","away_scorers":"{\"I. Mbaye 90+5'\"}","group":"I","matchday":"1","local_date":"06/16/2026 15:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"France","away_team_name_en":"Senegal"},{"id":"18","home_team_id":"35","away_team_id":"36","home_score":"1","away_score":"4","home_scorers":"{\"Aimn Hsin 39'\"}","away_scorers":"{\"Arling Halnd 29'\",\"Arling Halnd 43'\",\"Liv Avstigard 76'\",\"Aimn Hsin 90+7'\"}","group":"I","matchday":"1","local_date":"06/16/2026 18:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"Iraq","away_team_name_en":"Norway"},{"id":"21","home_team_id":"41","away_team_id":"42","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"K","matchday":"1","local_date":"06/17/2026 12:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Portugal","away_team_name_en":"Democratic Republic of the Congo"},{"id":"37","home_team_id":"25","away_team_id":"27","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"G","matchday":"2","local_date":"06/21/2026 12:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Belgium","away_team_name_en":"Iran"},{"id":"50","home_team_id":"10","away_team_id":"11","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"C","matchday":"3","local_date":"06/24/2026 18:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Morocco","away_team_name_en":"Haiti"},{"id":"51","home_team_id":"2","away_team_id":"3","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"A","matchday":"3","local_date":"06/24/2026 19:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"South Africa","away_team_name_en":"South Korea"},{"id":"9","home_team_id":"19","away_team_id":"20","home_score":"1","away_score":"0","home_scorers":"{\"A. Diallo 90'\"}","away_scorers":"null","group":"E","matchday":"1","local_date":"06/14/2026 19:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"Ivory Coast","away_team_name_en":"Ecuador"},{"id":"10","home_team_id":"17","away_team_id":"18","home_score":"7","away_score":"1","home_scorers":"{\"Felix Nmecha 7'\",\"N. Schlotterbeck 38'\",\"K. Havertz 45'+5'(p)\",\"J. Musiala 47'\",\"N. Brown 68'\",\"D. Undav 78'\",\"K. Havertz 88'\"}","away_scorers":"{\"L. Comenencia 21'\"}","group":"E","matchday":"1","local_date":"06/14/2026 12:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"Germany","away_team_name_en":"Curaçao"},{"id":"12","home_team_id":"23","away_team_id":"24","home_score":"5","away_score":"1","home_scorers":"{\"Y.Ayari 7'\",\"A. Isak 30'\",\"V. Gyökeres 59'\",\"M. Svanberg 84'\",\"Y.Ayari 90'+6'\"}","away_scorers":"{\"O. Rekik 43'\"}","group":"F","matchday":"1","local_date":"06/14/2026 20:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"Sweden","away_team_name_en":"Tunisia"},{"id":"25","home_team_id":"1","away_team_id":"3","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"A","matchday":"2","local_date":"06/18/2026 19:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Mexico","away_team_name_en":"South Korea"},{"id":"27","home_team_id":"5","away_team_id":"7","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"B","matchday":"2","local_date":"06/18/2026 15:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Canada","away_team_name_en":"Qatar"},{"id":"30","home_team_id":"12","away_team_id":"10","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"C","matchday":"2","local_date":"06/19/2026 18:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Scotland","away_team_name_en":"Morocco"},{"id":"32","home_team_id":"16","away_team_id":"14","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"D","matchday":"2","local_date":"06/19/2026 20:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Turkey","away_team_name_en":"Paraguay"},{"id":"43","home_team_id":"37","away_team_id":"39","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"J","matchday":"2","local_date":"06/22/2026 12:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Argentina","away_team_name_en":"Austria"},{"id":"49","home_team_id":"12","away_team_id":"9","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"C","matchday":"3","local_date":"06/24/2026 18:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Scotland","away_team_name_en":"Brazil"},{"id":"53","home_team_id":"6","away_team_id":"7","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"B","matchday":"3","local_date":"06/24/2026 12:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Bosnia and Herzegovina","away_team_name_en":"Qatar"},{"id":"58","home_team_id":"16","away_team_id":"13","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"D","matchday":"3","local_date":"06/25/2026 19:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Turkey","away_team_name_en":"United States"},{"id":"62","home_team_id":"36","away_team_id":"33","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"I","matchday":"3","local_date":"06/26/2026 15:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Norway","away_team_name_en":"France"},{"id":"63","home_team_id":"26","away_team_id":"27","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"G","matchday":"3","local_date":"06/26/2026 20:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Egypt","away_team_name_en":"Iran"},{"id":"65","home_team_id":"30","away_team_id":"31","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"H","matchday":"3","local_date":"06/26/2026 19:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Cape Verde","away_team_name_en":"Saudi Arabia"},{"id":"66","home_team_id":"32","away_team_id":"29","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"H","matchday":"3","local_date":"06/26/2026 18:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Uruguay","away_team_name_en":"Spain"},{"id":"70","home_team_id":"40","away_team_id":"37","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"J","matchday":"3","local_date":"06/27/2026 21:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Jordan","away_team_name_en":"Argentina"},{"id":"1","home_team_id":"1","away_team_id":"2","home_score":"2","away_score":"0","home_scorers":"{\"J. Quiñones 9'\",\"R. Jiménez 67'\"}","away_scorers":"null","group":"A","matchday":"1","local_date":"06/11/2026 13:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"Mexico","away_team_name_en":"South Africa"},{"id":"7","home_team_id":"9","away_team_id":"10","home_score":"1","away_score":"1","home_scorers":"{\"V. Júnior 32'\"}","away_scorers":"{\"I. Saibari 21'\"}","group":"C","matchday":"1","local_date":"06/13/2026 18:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"Brazil","away_team_name_en":"Morocco"},{"id":"11","home_team_id":"21","away_team_id":"22","home_score":"2","away_score":"2","home_scorers":"{\"Virgil van Dijk 51'\",\"C. Summerville 64'\"}","away_scorers":"{\"K. Nakamura 57'\",\"K. Ogawa 89'\"}","group":"F","matchday":"1","local_date":"06/14/2026 15:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"Netherlands","away_team_name_en":"Japan"},{"id":"26","home_team_id":"8","away_team_id":"6","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"B","matchday":"2","local_date":"06/18/2026 12:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Switzerland","away_team_name_en":"Bosnia and Herzegovina"},{"id":"29","home_team_id":"9","away_team_id":"11","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"C","matchday":"2","local_date":"06/19/2026 21:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Brazil","away_team_name_en":"Haiti"},{"id":"36","home_team_id":"24","away_team_id":"22","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"F","matchday":"2","local_date":"06/20/2026 22:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Tunisia","away_team_name_en":"Japan"},{"id":"38","home_team_id":"28","away_team_id":"26","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"G","matchday":"2","local_date":"06/21/2026 18:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"New Zealand","away_team_name_en":"Egypt"},{"id":"40","home_team_id":"32","away_team_id":"30","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"H","matchday":"2","local_date":"06/21/2026 18:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Uruguay","away_team_name_en":"Cape Verde"},{"id":"47","home_team_id":"44","away_team_id":"42","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"K","matchday":"2","local_date":"06/23/2026 20:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Colombia","away_team_name_en":"Democratic Republic of the Congo"},{"id":"71","home_team_id":"44","away_team_id":"41","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"K","matchday":"3","local_date":"06/27/2026 19:30","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Colombia","away_team_name_en":"Portugal"},{"id":"14","home_team_id":"29","away_team_id":"30","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"H","matchday":"1","local_date":"06/15/2026 12:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"Spain","away_team_name_en":"Cape Verde"},{"id":"16","home_team_id":"31","away_team_id":"32","home_score":"1","away_score":"1","home_scorers":"{\"Abdulelah Al-Amri 41'\"}","away_scorers":"{\"Maximiliano Araújo 80'\"}","group":"H","matchday":"1","local_date":"06/15/2026 18:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"Saudi Arabia","away_team_name_en":"Uruguay"},{"id":"20","home_team_id":"39","away_team_id":"40","home_score":"null","away_score":"null","home_scorers":"null","away_scorers":"null","group":"J","matchday":"1","local_date":"06/16/2026 21:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Austria","away_team_name_en":"Jordan"},{"id":"23","home_team_id":"43","away_team_id":"44","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"K","matchday":"1","local_date":"06/17/2026 20:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Uzbekistan","away_team_name_en":"Colombia"},{"id":"3","home_team_id":"5","away_team_id":"6","home_score":"1","away_score":"1","home_scorers":"{\"C. Larin 11'\"}","away_scorers":"{\"Jovo Lukić 21'\"}","group":"B","matchday":"1","local_date":"06/12/2026 15:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"Canada","away_team_name_en":"Bosnia and Herzegovina"},{"id":"13","home_team_id":"27","away_team_id":"28","home_score":"2","away_score":"2","home_scorers":"{\"Ramin Rezaiian 32'\",\"Mohammad Mohebi 64'\"}","away_scorers":"{\"Elijah Just 7'\",\"Elijah Just 54'\"}","group":"G","matchday":"1","local_date":"06/15/2026 18:00","finished":"TRUE","time_elapsed":"finished","type":"group","home_team_name_en":"Iran","away_team_name_en":"New Zealand"},{"id":"19","home_team_id":"37","away_team_id":"38","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"J","matchday":"1","local_date":"06/16/2026 20:00","finished":"FALSE","time_elapsed":"live","type":"group","home_team_name_en":"Argentina","away_team_name_en":"Algeria"},{"id":"24","home_team_id":"47","away_team_id":"48","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"L","matchday":"1","local_date":"06/17/2026 19:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Ghana","away_team_name_en":"Panama"},{"id":"28","home_team_id":"4","away_team_id":"2","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"A","matchday":"2","local_date":"06/18/2026 12:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Czech Republic","away_team_name_en":"South Africa"},{"id":"48","home_team_id":"45","away_team_id":"47","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"L","matchday":"2","local_date":"06/23/2026 16:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"England","away_team_name_en":"Ghana"},{"id":"55","home_team_id":"18","away_team_id":"19","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"E","matchday":"3","local_date":"06/25/2026 16:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Curaçao","away_team_name_en":"Ivory Coast"},{"id":"56","home_team_id":"20","away_team_id":"17","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"E","matchday":"3","local_date":"06/25/2026 16:00","finished":"FALSE","time_elapsed":"notstarted","type":"group","home_team_name_en":"Ecuador","away_team_name_en":"Germany"},{"id":"760486","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R32","matchday":"0","local_date":"06/28/2026 16:00","finished":"FALSE","time_elapsed":"notstarted","type":"r32","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760487","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R32","matchday":"0","local_date":"06/29/2026 14:00","finished":"FALSE","time_elapsed":"notstarted","type":"r32","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760488","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R32","matchday":"0","local_date":"06/29/2026 22:00","finished":"FALSE","time_elapsed":"notstarted","type":"r32","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760489","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R32","matchday":"0","local_date":"06/29/2026 17:30","finished":"FALSE","time_elapsed":"notstarted","type":"r32","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760490","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R32","matchday":"0","local_date":"06/30/2026 14:00","finished":"FALSE","time_elapsed":"notstarted","type":"r32","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760491","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R32","matchday":"0","local_date":"06/30/2026 22:00","finished":"FALSE","time_elapsed":"notstarted","type":"r32","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760492","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R32","matchday":"0","local_date":"06/30/2026 18:00","finished":"FALSE","time_elapsed":"notstarted","type":"r32","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760493","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R32","matchday":"0","local_date":"07/01/2026 17:00","finished":"FALSE","time_elapsed":"notstarted","type":"r32","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760494","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R32","matchday":"0","local_date":"07/01/2026 21:00","finished":"FALSE","time_elapsed":"notstarted","type":"r32","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760495","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R32","matchday":"0","local_date":"07/01/2026 13:00","finished":"FALSE","time_elapsed":"notstarted","type":"r32","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760496","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R32","matchday":"0","local_date":"07/02/2026 20:00","finished":"FALSE","time_elapsed":"notstarted","type":"r32","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760497","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R32","matchday":"0","local_date":"07/02/2026 16:00","finished":"FALSE","time_elapsed":"notstarted","type":"r32","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760498","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R32","matchday":"0","local_date":"07/03/2026 00:00","finished":"FALSE","time_elapsed":"notstarted","type":"r32","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760499","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R32","matchday":"0","local_date":"07/03/2026 15:00","finished":"FALSE","time_elapsed":"notstarted","type":"r32","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760500","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R32","matchday":"0","local_date":"07/03/2026 19:00","finished":"FALSE","time_elapsed":"notstarted","type":"r32","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760501","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R32","matchday":"0","local_date":"07/03/2026 22:30","finished":"FALSE","time_elapsed":"notstarted","type":"r32","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760502","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R16","matchday":"0","local_date":"07/04/2026 14:00","finished":"FALSE","time_elapsed":"notstarted","type":"r16","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760503","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R16","matchday":"0","local_date":"07/04/2026 18:00","finished":"FALSE","time_elapsed":"notstarted","type":"r16","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760504","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R16","matchday":"0","local_date":"07/05/2026 17:00","finished":"FALSE","time_elapsed":"notstarted","type":"r16","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760505","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R16","matchday":"0","local_date":"07/05/2026 21:00","finished":"FALSE","time_elapsed":"notstarted","type":"r16","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760506","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R16","matchday":"0","local_date":"07/06/2026 16:00","finished":"FALSE","time_elapsed":"notstarted","type":"r16","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760507","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R16","matchday":"0","local_date":"07/06/2026 21:00","finished":"FALSE","time_elapsed":"notstarted","type":"r16","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760508","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R16","matchday":"0","local_date":"07/07/2026 17:00","finished":"FALSE","time_elapsed":"notstarted","type":"r16","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760509","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"R16","matchday":"0","local_date":"07/07/2026 13:00","finished":"FALSE","time_elapsed":"notstarted","type":"r16","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760510","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"QF","matchday":"0","local_date":"07/09/2026 17:00","finished":"FALSE","time_elapsed":"notstarted","type":"qf","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760511","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"QF","matchday":"0","local_date":"07/10/2026 16:00","finished":"FALSE","time_elapsed":"notstarted","type":"qf","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760512","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"QF","matchday":"0","local_date":"07/11/2026 18:00","finished":"FALSE","time_elapsed":"notstarted","type":"qf","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760513","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"QF","matchday":"0","local_date":"07/11/2026 22:00","finished":"FALSE","time_elapsed":"notstarted","type":"qf","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760514","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"SF","matchday":"0","local_date":"07/14/2026 16:00","finished":"FALSE","time_elapsed":"notstarted","type":"sf","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760515","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"SF","matchday":"0","local_date":"07/15/2026 16:00","finished":"FALSE","time_elapsed":"notstarted","type":"sf","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760516","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"3P","matchday":"0","local_date":"07/18/2026 18:00","finished":"FALSE","time_elapsed":"notstarted","type":"3p","home_team_name_en":"A definir","away_team_name_en":"A definir"},{"id":"760517","home_team_id":"0","away_team_id":"0","home_score":"0","away_score":"0","home_scorers":"null","away_scorers":"null","group":"FINAL","matchday":"0","local_date":"07/19/2026 16:00","finished":"FALSE","time_elapsed":"notstarted","type":"final","home_team_name_en":"A definir","away_team_name_en":"A definir"}],"baked_at":"23/Jun/2026 18:00"};
+
 var S={T:{},G:[],M:[],notif:false,ls:{},mf:'all'};
+
 var API='https://worldcup26.ir/get/';
+
 var PX='https://corsproxy.io/?url=';
 
+
+
 function goP(n,tab,fromBot){
+
   for(var i=0;i<5;i++){
+
     document.getElementById('p'+i).classList.toggle('active',i===n);
+
     document.getElementById('nav'+i).classList.toggle('active',i===n);
+
   }
+
   if(tab){document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});tab.classList.add('active');}
+
   else if(fromBot){document.querySelectorAll('.tab').forEach(function(t,i){t.classList.toggle('active',i===n);});}
+
 }
+
 function toast(msg,goal){
+
   var t=document.getElementById('toast');
+
   t.textContent=msg;t.className='toast'+(goal?' goal':'');
+
   void t.offsetWidth;t.classList.add('show');
+
   setTimeout(function(){t.classList.remove('show');},3500);
+
 }
+
 function toggleNotif(){
+
   if(!S.notif){
+
     if(!('Notification' in window)){toast('Navegador sem suporte a notificações');return;}
+
     Notification.requestPermission().then(function(p){
+
       if(p==='granted'){
+
         S.notif=true;
+
         var b=document.getElementById('btnNotif');b.className='bnotif on';b.textContent='🔔 Ativo';
+
         toast('Notificações ativadas! ⚽');
+
         new Notification('Copa 2026',{body:'Alertas de gol ativados!',icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">⚽</text></svg>'});
+
       }else toast('Permissão negada. Ative nas configurações.');
+
     });
+
   }else{
+
     S.notif=false;
+
     var b=document.getElementById('btnNotif');b.className='bnotif';b.textContent='🔔 Gols';
+
     toast('Notificações desativadas.');
+
   }
+
 }
+
 function notifGoal(body){
+
   if(S.notif&&Notification.permission==='granted')
+
     new Notification('⚽ GOOOL! Copa 2026',{body:body,icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">⚽</text></svg>',tag:'g'+Date.now()});
+
   toast('⚽ GOOOL! '+body,true);
+
 }
+
 // ESPN public API — CORS nativo, sem chave, dados ao vivo
+
 var ESPN_SB='https://site.api.espn.com/apis/site/v2/sports/soccer/FIFA.World/scoreboard?dates=20260611-20260719&limit=200';
+
 var ESPN_ST='https://site.api.espn.com/apis/v2/sports/soccer/FIFA.World/standings';
 
+
+
 // ISO date → MM/DD/YYYY HH:MM em BRT (UTC-3)
+
 function espnDate(iso){
+
   var d=new Date(iso);
+
   var b=new Date(d.getTime()-3*3600000);
+
   return String(b.getUTCMonth()+1).padStart(2,'0')+'/'+String(b.getUTCDate()).padStart(2,'0')+'/'+b.getUTCFullYear()+' '+String(b.getUTCHours()).padStart(2,'0')+':'+String(b.getUTCMinutes()).padStart(2,'0');
+
 }
+
 // Extrai letra do grupo ou fase eliminatória
+
 function espnGroup(note){
+
   var m=note&&note.match(/Group\s+([A-L])/i);
+
   if(m)return m[1].toUpperCase();
+
   if(/Round of 32/i.test(note))return 'R32';
+
   if(/Round of 16/i.test(note))return 'R16';
+
   if(/Quarter.*Final/i.test(note))return 'QF';
+
   if(/Semi.*Final/i.test(note))return 'SF';
+
   if(/Third.*Place/i.test(note))return '3P';
+
   if(/Final/i.test(note))return 'F';
+
   return '?';
+
 }
+
 // Monta string de artilheiros no formato esperado pelo parseSc()
+
 function espnScorers(details,teamId){
+
   var sc=[];
+
   (details||[]).forEach(function(d){
+
     if(!d.scoringPlay||d.ownGoal)return;
+
     if(String(d.team&&d.team.id)!==String(teamId))return;
+
     var nm=d.athletesInvolved&&d.athletesInvolved[0]?d.athletesInvolved[0].shortName:'';
+
     var t=d.clock?d.clock.displayValue:'';
+
     if(nm)sc.push('"'+nm+(t?' '+t:'')+'"');
+
   });
+
   return sc.length?'{'+sc.join(',')+'}':null;
+
 }
+
 // Transforma dados ESPN nos formatos S.T / S.G / S.M do app
+
+// Mapeia season.slug ESPN -> group/type
+
+function espnSlug2Type(slug){
+
+  if(slug==='round-of-32')return{group:'R32',type:'r32'};
+
+  if(slug==='round-of-16')return{group:'R16',type:'r16'};
+
+  if(slug==='quarterfinals')return{group:'QF',type:'qf'};
+
+  if(slug==='semifinals')return{group:'SF',type:'sf'};
+
+  if(slug==='3rd-place-match')return{group:'3P',type:'3p'};
+
+  if(slug==='final')return{group:'FINAL',type:'final'};
+
+  return null;
+
+}
+
 function parseESPN(sbData,stData){
+
   // S.T — times (logos ESPN em alta resolução)
+
   S.T={};
+
   stData.children.forEach(function(grp){
+
     grp.standings.entries.forEach(function(e){
+
       var t=e.team,logo=t.logos&&t.logos[0]?t.logos[0].href:'';
+
       S.T[t.id]={id:t.id,name_en:t.displayName,flag:logo};
+
     });
+
   });
+
   sbData.events.forEach(function(ev){
+
     ev.competitions[0].competitors.forEach(function(c){
+
       var t=c.team;
+
       if(!S.T[t.id])S.T[t.id]={id:t.id,name_en:t.displayName,flag:t.logo||''};
+
     });
+
   });
+
   // S.G — classificação por grupo
+
   S.G=stData.children.map(function(grp){
+
     var letter=grp.name.replace('Group ','').trim();
+
     var teams=grp.standings.entries.map(function(e){
+
       var st={};
+
       e.stats.forEach(function(s){st[s.name]=s.displayValue;});
+
       return{team_id:e.team.id,mp:st.gamesPlayed||'0',w:st.wins||'0',d:st.ties||'0',l:st.losses||'0',pts:st.points||'0',gf:st.pointsFor||'0',ga:st.pointsAgainst||'0',gd:st.pointDifferential||'0'};
+
     });
+
     return{name:letter,teams:teams};
+
   });
+
   // Pré-computa matchday: por grupo, ordena por data e numera em pares
+
   var grpDates={};
+
   sbData.events.forEach(function(ev){
+
     var m=(ev.competitions[0].altGameNote||'').match(/Group\s+([A-L])/i);
+
     if(m){var g=m[1].toUpperCase();if(!grpDates[g])grpDates[g]=[];grpDates[g].push({id:ev.id,date:ev.date});}
+
   });
+
   var mdMap={};
+
   Object.keys(grpDates).forEach(function(g){
+
     grpDates[g].slice().sort(function(a,b){return a.date>b.date?1:-1;}).forEach(function(x,i){mdMap[x.id]=Math.floor(i/2)+1;});
+
   });
+
   // S.M — jogos
+
   S.M=sbData.events.map(function(ev){
+
     var c=ev.competitions[0];
+
     var home=c.competitors.find(function(x){return x.homeAway==='home';})||c.competitors[0];
+
     var away=c.competitors.find(function(x){return x.homeAway==='away';})||c.competitors[1];
+
     var st=c.status.type,note=c.altGameNote||'';
-    var group=espnGroup(note);
-    var type=group.length===1?'group':group.toLowerCase();
+
+    var slug=(ev.season&&ev.season.slug)||'';
+
+    var ko=espnSlug2Type(slug);
+
+    var group=ko?ko.group:espnGroup(note);
+
+    var type=ko?ko.type:(group.length===1?'group':group.toLowerCase());
+
     var te=st.state==='pre'?'notstarted':st.name==='STATUS_HALFTIME'?'halftime':st.state==='in'?'inprogress':'finished';
+
     return{
+
       id:ev.id,
+
       home_team_id:home.team.id,away_team_id:away.team.id,
+
       home_score:home.score||'0',away_score:away.score||'0',
+
       home_team_name_en:home.team.displayName,away_team_name_en:away.team.displayName,
+
       home_scorers:espnScorers(c.details,home.team.id),
+
       away_scorers:espnScorers(c.details,away.team.id),
+
       group:group,matchday:String(mdMap[ev.id]||'1'),
+
       local_date:espnDate(ev.date),
+
       finished:st.completed?'TRUE':'',time_elapsed:te,type:type
+
     };
+
   });
+
 }
+
 function loadBaked(){
+
   S.T={};(BAKED.teams||[]).forEach(function(t){S.T[t.id]=t;});
+
   S.G=BAKED.groups||[];S.M=BAKED.games||[];
+
   document.getElementById('lastUpdate').textContent='Dados: '+BAKED.baked_at+' — buscando ao vivo...';
+
   document.getElementById('loadMsg').style.display='none';
+
   renderG();renderM();renderA();renderC();renderI();
+
 }
+
 async function loadAll(){
+
   try{
+
     document.getElementById('lastUpdate').textContent='Atualizando...';
+
     var sb=await fetch(ESPN_SB,{cache:'no-cache'}).then(function(r){return r.json();});
+
     var st=await fetch(ESPN_ST,{cache:'no-cache'}).then(function(r){return r.json();});
+
     parseESPN(sb,st);
+
     checkGoals();
+
     renderG();renderM();renderA();renderC();renderI();
+
     updateLiveBadge();
+
     var live=S.M.some(function(g){return g.time_elapsed==='inprogress'||g.time_elapsed==='halftime';});
+
     document.getElementById('liveDot').style.display=live?'block':'none';
+
     var n=new Date();
+
     document.getElementById('lastUpdate').textContent='⚡ ESPN ao vivo — '+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
+
     window._lastLoad=Date.now();
+
     document.getElementById('loadMsg').style.display='none';
+
   }catch(e){
+
     document.getElementById('lastUpdate').textContent='Dados: '+BAKED.baked_at+' (offline)';
+
     document.getElementById('loadMsg').style.display='none';
+
   }
+
 }
+
 function checkGoals(){
+
   S.M.forEach(function(g){
+
     if(g.time_elapsed==='inprogress'||g.time_elapsed==='halftime'){
+
       var k=g.id,sc=g.home_score+'-'+g.away_score;
+
       if(S.ls[k]&&S.ls[k]!==sc)
+
         notifGoal(tn(g.home_team_id,g.home_team_name_en)+' '+g.home_score+' × '+g.away_score+' '+tn(g.away_team_id,g.away_team_name_en));
+
       S.ls[k]=sc;
+
     }
+
   });
+
 }
+
 function tn(id,fb){var t=S.T[id];return t?t.name_en:(fb||'TBD');}
+
 function tf(id){var t=S.T[id];return t?t.flag:'';}
+
 function fd(d){
+
   if(!d)return '';
+
   var p=d.split(' '),dp=p[0].split('/');
+
   var m=['','Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+
   return dp[1]+' '+m[parseInt(dp[0])]+' '+p[1];
+
 }
+
 function today(d){
+
   var n=new Date();
+
   var s=String(n.getMonth()+1).padStart(2,'0')+'/'+String(n.getDate()).padStart(2,'0')+'/'+n.getFullYear();
+
   return d&&d.startsWith(s);
+
 }
+
 function parseSc(s){
+
   if(!s||s==='null')return [];
+
   // Strip outer { } with or without quotes, then split
+
   var c=s.replace(/^\{"|"\}$/g,'').replace(/^\{/,'').replace(/\}$/,'');
+
   return c.split('","').map(function(x){return x.replace(/^"|"$/g,'');}).filter(function(x){return x&&x!=='null';});
+
 }
+
 function extractName(s){
+
   if(!s)return null;
+
   if(/\(OG\)/i.test(s))return null;              // pula gols contra
+
   return s
+
     .replace(/\s+\d+[^\s]*$/,'')                 // remove tempo do fim (27', 45'+5', 90+6' etc)
+
     .replace(/\s*\(p\)/ig,'')                    // marcador de pênalti
+
     .trim()||null;
+
 }
+
 function renderG(selectedGroup){
+
   if(selectedGroup===undefined)selectedGroup=window._selGroup||'Todos';
+
   window._selGroup=selectedGroup;
+
   var tg=0,tj=0;
+
   S.M.forEach(function(g){if(g.finished==='TRUE'){tg+=parseInt(g.home_score||0)+parseInt(g.away_score||0);tj++;}});
+
   var gpg=tj?Math.round(tg/tj*100)/100:0;
+
   var liveGroups=[];
+
   S.M.forEach(function(g){if(g.time_elapsed==='inprogress'||g.time_elapsed==='halftime')liveGroups.push(g.group);});
 
+
+
   // KPI bar
+
   var h='<div class="krow c3">';
+
   h+='<div class="kpi"><div class="kpi-l">Grupos</div><div class="kpi-v">12</div><div class="kpi-s">A até L</div></div>';
+
   h+='<div class="kpi"><div class="kpi-l">Gols</div><div class="kpi-v">'+tg+'</div><div class="kpi-s">'+gpg+'/jogo</div></div>';
+
   h+='<div class="kpi"><div class="kpi-l">Jogos</div><div class="kpi-v">'+tj+'</div><div class="kpi-s">de 72 na fase</div></div></div>';
 
+
+
   // Group chips
+
   h+='<div class="gchips" id="gChips">';
+
   var chips=['Todos','A','B','C','D','E','F','G','H','I','J','K','L'];
+
   chips.forEach(function(g){
+
     var isLive=liveGroups.indexOf(g)>=0;
+
     var active=g===selectedGroup?' gchip-on':'';
+
     h+='<button data-g="'+g+'" class="gchip'+active+'" onclick="renderG(this.dataset.g)">';
+
     h+=g+(isLive?'<span class="gchip-live"></span>':'')+'</button>';
+
   });
+
   h+='</div>';
 
+
+
   // Tables
+
   var groups=['A','B','C','D','E','F','G','H','I','J','K','L'];
+
   var show=selectedGroup==='Todos'?groups:[selectedGroup];
+
   show.forEach(function(gn){
+
     var grp=S.G.find(function(g){return g.name===gn;});if(!grp)return;
+
     var ts=grp.teams.slice().sort(function(a,b){var p=parseInt(b.pts)-parseInt(a.pts);return p||parseInt(b.gd)-parseInt(a.gd);});
+
     var lv=liveGroups.indexOf(gn)>=0;
+
     h+='<div class="gcard"><div class="gname">GRUPO '+gn+(lv?' <span class="blv">AO VIVO</span>':'')+'</div>';
+
     h+='<table class="gt"><thead><tr><th>Seleção</th><th title="Jogos">J</th><th title="Vitórias">V</th><th title="Empates">E</th><th title="Derrotas">D</th><th title="Gols Pró">GP</th><th title="Gols Contra">GC</th><th title="Saldo">SG</th><th title="Pontos">Pts</th></tr></thead><tbody>';
+
     ts.forEach(function(t,i){
+
       var ti=S.T[t.team_id]||{name_en:'#'+t.team_id,flag:''};
+
       h+='<tr class="'+(i<2?'q1':i===2?'q3':'')+'"><td><div class="tc">';
+
       if(ti.flag)h+='<img class="tf" src="'+ti.flag+'" alt="" onerror="this.style.display=&quot;none&quot;">';
+
       h+='<span>'+ti.name_en+'</span></div></td>';
+
       h+='<td>'+t.mp+'</td><td>'+t.w+'</td><td>'+t.d+'</td><td>'+t.l+'</td>';
+
       h+='<td>'+t.gf+'</td><td>'+t.ga+'</td><td>'+(parseInt(t.gd)>=0?'+':'')+t.gd+'</td><td class="pts">'+t.pts+'</td></tr>';
+
     });
+
     h+='</tbody></table></div>';
+
     // Mini results for selected single group
+
     if(selectedGroup!=='Todos'){
+
       var gms=S.M.filter(function(g){return g.group===gn;}).sort(function(a,b){return parseInt(a.matchday)-parseInt(b.matchday)||a.local_date>b.local_date?1:-1;});
+
       if(gms.length){
+
         h+='<div class="shdr" style="margin-top:14px">Jogos do Grupo '+gn+'</div>';
+
         gms.forEach(function(g){
+
           var dn=g.finished==='TRUE',lv2=g.time_elapsed==='inprogress'||g.time_elapsed==='halftime';
+
           var hF=tf(g.home_team_id),aF=tf(g.away_team_id);
+
           h+='<div class="mc" data-mid="'+g.id+'" style="margin-bottom:8px;cursor:pointer"><div class="mm">';
+
           h+='<span style="font-size:10px;color:var(--muted)">MD'+g.matchday+' &bull; '+fd(g.local_date)+'</span>';
+
           if(lv2)h+='<span class="slv"><span class="ldot" style="display:block"></span>AO VIVO</span>';
+
           else if(dn)h+='<span class="sdn">✓ Encerrado</span>';
+
           else h+='<span class="ssn">'+(g.local_date?g.local_date.split(' ')[1]:'')+'</span>';
+
           h+='</div><div class="mb">';
+
           h+='<div class="mt">'+(hF?'<img class="mfl" src="'+hF+'" alt="">':'')+'<div class="mn">'+tn(g.home_team_id,g.home_team_name_en)+'</div></div>';
+
           h+='<div class="ms">'+(dn||lv2?'<div class="sn">'+g.home_score+'<span style="color:var(--muted)"> – </span>'+g.away_score+'</div>':'<div class="sv">vs</div>')+'</div>';
+
           h+='<div class="mt">'+(aF?'<img class="mfl" src="'+aF+'" alt="">':'')+'<div class="mn">'+tn(g.away_team_id,g.away_team_name_en)+'</div></div>';
+
           h+='</div></div>';
+
         });
+
       }
+
     }
+
   });
+
+
 
   if(selectedGroup==='Todos'){
+
     h+='<div style="padding:8px 0;font-size:10px;color:var(--muted)"><span style="border-left:3px solid var(--green);padding-left:5px;margin-right:10px">Classifica (Top 2)</span><span style="border-left:3px solid var(--blue);padding-left:5px">Pode avançar (3º)</span></div>';
+
   }
+
   document.getElementById('gContent').innerHTML=h;
+
   // Scroll selected chip into view
+
   var el=document.querySelector('.gchip-on');
+
   if(el)el.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'});
+
 }
+
 function filt(f,btn){
+
   S.mf=f;
+
   document.querySelectorAll('.fb').forEach(function(b){b.classList.remove('active');});
+
   if(btn)btn.classList.add('active');
+
   renderM();
+
 }
+
 function renderM(){
+
   var ms=S.M.slice();
+
   if(S.mf==='live')ms=ms.filter(function(g){return g.time_elapsed==='inprogress'||g.time_elapsed==='halftime';});
+
   else if(S.mf==='today')ms=ms.filter(function(g){return today(g.local_date);});
+
   else if(S.mf==='upcoming')ms=ms.filter(function(g){return g.finished!=='TRUE'&&g.time_elapsed==='notstarted';});
+
   else if(S.mf==='finished')ms=ms.filter(function(g){return g.finished==='TRUE';});
+
   ms.sort(function(a,b){
+
     var la=(a.time_elapsed==='inprogress'||a.time_elapsed==='halftime')?0:1;
+
     var lb=(b.time_elapsed==='inprogress'||b.time_elapsed==='halftime')?0:1;
+
     if(la!==lb)return la-lb;
+
     return a.local_date>b.local_date?1:-1;
+
   });
+
   if(!ms.length){document.getElementById('mContent').innerHTML='<div style="text-align:center;padding:40px;color:var(--muted)">Nenhum jogo encontrado</div>';return;}
+
   var h='',lg='';
+
   ms.forEach(function(g){
+
     var lv=g.time_elapsed==='inprogress'||g.time_elapsed==='halftime';
+
     var dn=g.finished==='TRUE';
+
     var hN=tn(g.home_team_id,g.home_team_name_en),aN=tn(g.away_team_id,g.away_team_name_en);
+
     var hF=tf(g.home_team_id),aF=tf(g.away_team_id);
+
     var hs=parseSc(g.home_scorers),as=parseSc(g.away_scorers);
+
     if(S.mf==='all'&&g.group!==lg){h+='<div class="shdr">Grupo '+g.group+'</div>';lg=g.group;}
+
     h+='<div class="mc" data-mid="'+g.id+'" style="cursor:pointer"><div class="mm"><span>'+fd(g.local_date)+' · '+g.group+' MD'+g.matchday+'</span>';
+
     if(lv)h+='<span class="slv"><span class="ldot" style="display:block"></span>'+g.time_elapsed.toUpperCase()+'</span>';
+
     else if(dn)h+='<span class="sdn">✓ Encerrado</span>';
+
     else h+='<span class="ssn">'+(g.local_date?g.local_date.split(' ')[1]:'')+'</span>';
+
     h+='</div><div class="mb">';
+
     h+='<div class="mt">'+(hF?'<img class="mfl" src="'+hF+'" alt="">':'')+'<div class="mn">'+hN+'</div></div>';
+
     h+='<div class="ms">'+(dn||lv?'<div class="sn">'+g.home_score+'<span style="color:var(--muted)"> – </span>'+g.away_score+'</div>':'<div class="sv">vs</div>')+'</div>';
+
     h+='<div class="mt">'+(aF?'<img class="mfl" src="'+aF+'" alt="">':'')+'<div class="mn">'+aN+'</div></div>';
+
     h+='</div>';
+
     if(hs.length||as.length){
+
       h+='<div class="scr"><div class="ss">';
+
       hs.forEach(function(s){h+='<div>⚽ '+s+'</div>';});
+
       h+='</div><div class="ss r">';
+
       as.forEach(function(s){h+='<div>'+s+' ⚽</div>';});
+
       h+='</div></div>';
+
     }
+
     h+='</div>';
+
   });
+
   document.getElementById('mContent').innerHTML=h;
+
 }
+
 function renderA(){
+
   var sm={};
+
   S.M.forEach(function(g){
+
     var proc=function(sc,tid,fb){
+
       parseSc(sc).forEach(function(s){
+
         var nm=extractName(s);
+
         if(!nm||nm==='null'||nm.length<2)return;
+
         var k=nm+'_'+tid;
+
         if(!sm[k])sm[k]={name:nm,team:tn(tid,fb),flag:tf(tid),goals:0};
+
         sm[k].goals++;
+
       });
+
     };
+
     proc(g.home_scorers,g.home_team_id,g.home_team_name_en);
+
     proc(g.away_scorers,g.away_team_id,g.away_team_name_en);
+
   });
+
   var list=Object.values(sm).sort(function(a,b){return b.goals-a.goals;});
+
   var tot=0;S.M.forEach(function(g){if(g.finished==='TRUE')tot+=parseInt(g.home_score||0)+parseInt(g.away_score||0);});
+
   var h='<div class="krow"><div class="kpi"><div class="kpi-l">Artilheiro</div>';
+
   h+='<div class="kpi-v" style="font-size:14px;margin-top:3px">'+(list[0]?list[0].name:'—')+'</div>';
+
   h+='<div class="kpi-s">'+(list[0]?list[0].goals+' gol'+(list[0].goals>1?'s':''):'-')+'</div></div>';
+
   h+='<div class="kpi"><div class="kpi-l">Total Gols</div><div class="kpi-v">'+tot+'</div>';
+
   h+='<div class="kpi-s">'+list.length+' marcadores</div></div></div>';
+
   if(!list.length){h+='<div style="text-align:center;padding:40px;color:var(--muted)">Aguardando gols...</div>';}
+
   else{
+
     h+='<div class="tcard"><div class="thdr">🏅 Artilharia — Copa 2026</div>';
+
     list.forEach(function(p,i){
+
       var rc=i===0?'g':i===1?'s':i===2?'b':'';
+
       h+='<div class="tr2"><div class="trk '+rc+'">'+(i+1)+'</div><div class="ti">';
+
       h+='<div class="tn" style="display:flex;align-items:center;gap:6px">';
+
       if(p.flag)h+='<img style="width:16px;height:11px;object-fit:cover;border-radius:2px" src="'+p.flag+'" alt="">';
+
       h+=p.name+'</div><div class="td2">'+p.team+'</div></div>';
+
       h+='<div class="ts">'+p.goals+'</div></div>';
+
     });
+
     h+='</div>';
+
   }
+
   document.getElementById('aContent').innerHTML=h;
+
 }
+
 function renderC(){
-  var kn=S.M.filter(function(g){return ['R16','QF','SF','F'].indexOf(g.type)>=0||['R16','QF','SF','F'].indexOf(g.group)>=0;});
-  var h='<div class="shdr" style="margin-top:4px">Fase Eliminatória — A partir de 28/Jun</div>';
+
+  var PHASES=[
+
+    {k:'R32',n:'Rodada de 32 (28/Jun–3/Jul)'},
+
+    {k:'R16',n:'Oitavas de Final (4–7/Jul)'},
+
+    {k:'QF',n:'Quartas de Final (9–12/Jul)'},
+
+    {k:'SF',n:'Semifinais (14–15/Jul)'},
+
+    {k:'3P',n:'3° Lugar (18/Jul)'},
+
+    {k:'FINAL',n:'FINAL (19/Jul — MetLife)'}
+
+  ];
+
+  var kn=S.M.filter(function(g){
+
+    return['R32','R16','QF','SF','3P','FINAL'].indexOf(g.group)>=0||
+
+           ['r32','r16','qf','sf','3p','final'].indexOf(g.type)>=0;
+
+  });
+
+  var h='';
+
   if(!kn.length){
+
     h+='<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;text-align:center">';
-    h+='<div style="font-size:36px;margin-bottom:10px">🗂</div>';
-    h+='<div style="font-weight:600;font-size:14px;margin-bottom:6px">Chaveamento disponível a partir de 28/Jun</div>';
-    h+='<div style="font-size:12px;color:var(--muted)">Os 32 classificados (Top 2 de cada grupo + 8 melhores 3°s) definirão o chaveamento.</div></div>';
-    h+='<div class="shdr">Líderes Atuais por Grupo</div>';
+
+    h+='<div style="font-size:32px;margin-bottom:10px">⇄️</div>';
+
+    h+='<div style="font-weight:600;font-size:14px;margin-bottom:6px">Chaveamento a partir de 28/Jun</div>';
+
+    h+='<div style="font-size:12px;color:var(--muted)">R32 → Oitavas → Quartas → Semis → Final 19/Jul</div></div>';
+
+    h+='<div class="shdr" style="margin-top:14px">Líderes por Grupo</div>';
+
     h+='<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">';
+
     ['A','B','C','D','E','F','G','H','I','J','K','L'].forEach(function(gn){
+
       var grp=S.G.find(function(g){return g.name===gn;});if(!grp||!grp.teams.length)return;
+
       var ld=grp.teams.slice().sort(function(a,b){return parseInt(b.pts)-parseInt(a.pts)||parseInt(b.gd)-parseInt(a.gd);})[0];
+
       var ti=S.T[ld.team_id]||{name_en:'#'+ld.team_id,flag:''};
+
       h+='<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:flex;align-items:center;gap:8px">';
+
       h+='<div style="font-size:10px;color:var(--muted);font-weight:700;min-width:12px">'+gn+'</div>';
+
       if(ti.flag)h+='<img style="width:20px;height:14px;object-fit:cover;border-radius:2px" src="'+ti.flag+'" alt="">';
+
       h+='<div><div style="font-size:11px;font-weight:600">'+ti.name_en+'</div>';
-      h+='<div style="font-size:10px;color:var(--muted)">'+ld.pts+' pts · SG '+(parseInt(ld.gd)>=0?'+':'')+ld.gd+'</div></div></div>';
+
+      h+='<div style="font-size:10px;color:var(--muted)">'+ld.pts+' pts·SG '+(parseInt(ld.gd)>=0?'+':'')+ld.gd+'</div></div></div>';
+
     });
+
     h+='</div>';
+
   }else{
-    [{k:'R16',n:'Oitavas de Final'},{k:'QF',n:'Quartas de Final'},{k:'SF',n:'Semifinais'},{k:'F',n:'Final'}].forEach(function(rnd){
-      var rg=kn.filter(function(g){return g.type===rnd.k||g.group===rnd.k;});if(!rg.length)return;
-      h+='<div style="margin-bottom:16px"><div class="shdr">'+rnd.n+'</div>';
-      rg.forEach(function(g){
-        var hN=parseInt(g.home_team_id)>0?tn(g.home_team_id,g.home_team_name_en):'A definir';
-        var aN=parseInt(g.away_team_id)>0?tn(g.away_team_id,g.away_team_name_en):'A definir';
-        var hF=parseInt(g.home_team_id)>0?tf(g.home_team_id):'';
-        var aF=parseInt(g.away_team_id)>0?tf(g.away_team_id):'';
-        h+='<div class="bm" data-mid="'+g.id+'" style="cursor:pointer">'; 
-        h+='<div class="bt"><div class="bi">'+(hF?'<img class="bf" src="'+hF+'" alt="">':'')+hN+'</div>';
-        h+='<div class="bsc">'+(g.finished==='TRUE'?g.home_score:'')+'</div></div>';
-        h+='<div class="bt"><div class="bi">'+(aF?'<img class="bf" src="'+aF+'" alt="">':'')+aN+'</div>';
-        h+='<div class="bsc">'+(g.finished==='TRUE'?g.away_score:'')+'</div></div>';
-        h+='<div style="font-size:10px;color:var(--muted);margin-top:5px;border-top:1px solid var(--border);padding-top:5px">'+fd(g.local_date)+'</div></div>';
+
+    PHASES.forEach(function(rnd){
+
+      var rg=kn.filter(function(g){
+
+        var gk=g.group||'',gt=g.type||'';
+
+        return gk===rnd.k||gt===rnd.k.toLowerCase()||gt===rnd.k;
+
       });
+
+      if(!rg.length)return;
+
+      rg.sort(function(a,b){return a.local_date>b.local_date?1:-1;});
+
+      h+='<div style="margin-bottom:16px"><div class="shdr">'+rnd.n+'</div>';
+
+      rg.forEach(function(g){
+
+        var hId=parseInt(g.home_team_id)||0,aId=parseInt(g.away_team_id)||0;
+
+        var hN=hId>0?tn(g.home_team_id,g.home_team_name_en):(g.home_team_name_en||'A definir');
+
+        var aN=aId>0?tn(g.away_team_id,g.away_team_name_en):(g.away_team_name_en||'A definir');
+
+        var hF=hId>0?tf(g.home_team_id):'';var aF=aId>0?tf(g.away_team_id):'';
+
+        var lv=g.time_elapsed==='inprogress'||g.time_elapsed==='halftime';
+
+        var dn=g.finished==='TRUE';
+
+        h+='<div class="bm">';
+
+        h+='<div style="font-size:10px;color:var(--muted);margin-bottom:6px">'+fd(g.local_date);
+
+        if(lv)h+=' · <span class="slv" style="display:inline-flex"><span class="ldot" style="display:block"></span>AO VIVO</span>';
+
+        else if(dn)h+=' · <span class="sdn">✓ Encerrado</span>';
+
+        h+='</div>';
+
+        h+='<div class="bt"><div class="bi">'+(hF?'<img class="bf" src="'+hF+'" alt="">':'')+hN+'</div>';
+
+        h+='<div class="bsc">'+(dn||lv?g.home_score:'')+'</div></div>';
+
+        h+='<div class="bt"><div class="bi">'+(aF?'<img class="bf" src="'+aF+'" alt="">':'')+aN+'</div>';
+
+        h+='<div class="bsc">'+(dn||lv?g.away_score:'')+'</div></div>';
+
+        h+='</div>';
+
+      });
+
       h+='</div>';
+
     });
+
   }
+
   document.getElementById('cContent').innerHTML=h;
+
 }
+
 function renderI(){
+
   var fin=S.M.filter(function(g){return g.finished==='TRUE';});
+
   if(!fin.length){document.getElementById('iContent').innerHTML='<div style="text-align:center;padding:40px;color:var(--muted)">Aguardando dados...</div>';return;}
+
   var tg=0,dr=0,sh=0,bw=[],tgm={};
+
   fin.forEach(function(g){
+
     var h2=parseInt(g.home_score||0),a2=parseInt(g.away_score||0);
+
     tg+=h2+a2;if(h2===a2)dr++;if(h2===0||a2===0)sh++;
+
     var df=Math.abs(h2-a2);
+
     if(df>=3)bw.push({txt:tn(g.home_team_id,g.home_team_name_en)+' '+h2+'×'+a2+' '+tn(g.away_team_id,g.away_team_name_en),df:df,gr:g.group});
+
     tgm[g.home_team_id]=(tgm[g.home_team_id]||0)+h2;
+
     tgm[g.away_team_id]=(tgm[g.away_team_id]||0)+a2;
+
   });
+
   bw.sort(function(a,b){return b.df-a.df;});
+
   var n=fin.length,gpg=Math.round(tg/n*100)/100;
+
   var ba=Object.keys(tgm).filter(function(id){return tgm[id]>0;}).sort(function(a,b){return tgm[b]-tgm[a];}).slice(0,5);
+
   var h='<div class="krow c3">';
+
   h+='<div class="kpi"><div class="kpi-l">Gols/Jogo</div><div class="kpi-v">'+gpg+'</div><div class="kpi-s">média</div></div>';
+
   h+='<div class="kpi"><div class="kpi-l">Empates</div><div class="kpi-v">'+Math.round(dr/n*100)+'%</div><div class="kpi-s">'+dr+' de '+n+'</div></div>';
+
   h+='<div class="kpi"><div class="kpi-l">Clean Sheet</div><div class="kpi-v">'+Math.round(sh/n*100)+'%</div><div class="kpi-s">'+sh+' jogos</div></div></div>';
+
   if(bw.length){
+
     h+='<div class="icard"><div class="iico">💥</div><div class="itit">Maiores Goleadas</div><div class="ibod">';
+
     bw.slice(0,6).forEach(function(w){h+='<div style="margin-bottom:4px">· <span class="im">'+w.txt+'</span> <span class="ip">Grupo '+w.gr+'</span></div>';});
+
     h+='</div></div>';
+
   }
+
   h+='<div class="icard"><div class="iico">⚔️</div><div class="itit">Melhores Ataques</div><div class="ibod">';
+
   ba.forEach(function(tid,i){
+
     var t=S.T[tid]||{name_en:'#'+tid};
+
     h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">';
+
     h+='<span style="color:var(--muted);min-width:16px">'+(i+1)+'.</span>';
+
     if(t.flag)h+='<img style="width:16px;height:11px;object-fit:cover;border-radius:2px" src="'+t.flag+'" alt="">';
+
     h+='<span class="im">'+t.name_en+'</span><span style="margin-left:auto;font-weight:700;color:var(--orange)">'+tgm[tid]+'⚽</span></div>';
+
   });
+
   h+='</div></div>';
+
   var pbg={};S.M.filter(function(g){return g.type==='group';}).forEach(function(g){pbg[g.group]=(pbg[g.group]||0)+(g.finished==='TRUE'?1:0);});
+
   h+='<div class="icard"><div class="iico">📈</div><div class="itit">Progresso por Grupo</div><div class="ibod">';
+
   ['A','B','C','D','E','F','G','H','I','J','K','L'].forEach(function(g){h+='<span class="ip">'+g+': '+(pbg[g]||0)+'/6</span>';});
+
   h+='</div></div>';
+
   var ups=S.M.filter(function(g){return g.time_elapsed==='notstarted';}).sort(function(a,b){return a.local_date>b.local_date?1:-1;}).slice(0,6);
+
   if(ups.length){
+
     h+='<div class="icard"><div class="iico">📅</div><div class="itit">Próximos Jogos</div><div class="ibod">';
+
     ups.forEach(function(g){
+
       h+='<div style="margin-bottom:5px;font-size:11px"><span style="color:var(--muted)">'+fd(g.local_date)+'</span> · <span class="im">'+tn(g.home_team_id,g.home_team_name_en)+' vs '+tn(g.away_team_id,g.away_team_name_en)+'</span> <span class="ip">'+g.group+'</span></div>';
+
     });
+
     h+='</div></div>';
+
   }
+
   h+='<div class="icard"><div class="iico">📋</div><div class="itit">Formato — Copa 2026</div><div class="ibod">';
+
   h+='<div>· <span class="im">48 seleções</span> — maior Copa da história</div>';
+
   h+='<div>· <span class="im">12 grupos</span> (A–L), 4 times cada</div>';
+
   h+='<div>· <span class="im">Classificam:</span> Top 2 de cada grupo + 8 melhores 3°s = 32 times</div>';
+
   h+='<div>· <span class="im">104 jogos</span> | Final: 19/Jul, MetLife Stadium</div>';
+
   h+='<div>· <span class="im">Sede:</span> 🇺🇸 EUA · 🇲🇽 México · 🇨🇦 Canadá</div>';
+
   h+='</div></div>';
+
   document.getElementById('iContent').innerHTML=h;
+
 }
 
-// Live clock
-setInterval(function(){
-  var n=new Date();
-  var cl=document.getElementById('hdrClock');
-  if(cl)cl.textContent='⏱ '+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');
-},1000);
-// Update live badge
-function updateLiveBadge(){
-  var b=document.getElementById('liveMatchBadge');
-  if(!b)return;
-  var live=S.M.some(function(g){return g.time_elapsed==='inprogress'||g.time_elapsed==='halftime';});
-  b.style.display=live?'inline-block':'none';
-  document.getElementById('liveDot').style.display=live?'block':'none';
-}
+
 
 // Live clock
+
 setInterval(function(){
+
   var n=new Date();
+
   var cl=document.getElementById('hdrClock');
+
   if(cl)cl.textContent='⏱ '+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');
+
 },1000);
+
 // Update live badge
+
 function updateLiveBadge(){
+
   var b=document.getElementById('liveMatchBadge');
+
   if(!b)return;
+
   var live=S.M.some(function(g){return g.time_elapsed==='inprogress'||g.time_elapsed==='halftime';});
+
   b.style.display=live?'inline-block':'none';
+
   document.getElementById('liveDot').style.display=live?'block':'none';
+
 }
+
+
+
+// Live clock
+
+setInterval(function(){
+
+  var n=new Date();
+
+  var cl=document.getElementById('hdrClock');
+
+  if(cl)cl.textContent='⏱ '+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');
+
+},1000);
+
+// Update live badge
+
+function updateLiveBadge(){
+
+  var b=document.getElementById('liveMatchBadge');
+
+  if(!b)return;
+
+  var live=S.M.some(function(g){return g.time_elapsed==='inprogress'||g.time_elapsed==='halftime';});
+
+  b.style.display=live?'inline-block':'none';
+
+  document.getElementById('liveDot').style.display=live?'block':'none';
+
+}
+
 // Auto-refresh a cada 60s (quando aba está ativa)
+
 setInterval(function(){
+
   if(!document.hidden)loadAll();
+
 },60000);
 
+
+
 // Recarrega dados ao voltar para a aba (mobile background suspension fix)
+
 document.addEventListener('visibilitychange',function(){
+
   if(!document.hidden){
+
     var el=document.getElementById('lastUpdate');
+
     if(el&&el.textContent.indexOf('Atualizando')<0)loadAll();
+
   }
+
 });
+
+
 
 // iOS: recarrega ao voltar via botão "voltar" do Safari
+
 window.addEventListener('pageshow',function(e){
+
   if(e.persisted)loadAll();
+
 });
 
+
+
 // Recarrega ao ganhar foco (troca de app no celular)
+
 window.addEventListener('focus',function(){loadAll();});
 
 
+
+
+
 // ── Live Chat Modal ─────────────────────────────────────
+
 var ESPN_SUMMARY='https://site.api.espn.com/apis/site/v2/sports/soccer/FIFA.World/summary?event={ID}&lang=pt';
+
 var _mTimer=null,_mId=null,_mSeq=-1;
 
+
+
 function openMatch(id){
+
   _mId=id; _mSeq=-1;
+
   var modal=document.getElementById('matchModal');
+
   modal.classList.add('open');
+
   document.body.style.overflow='hidden';
+
   document.getElementById('mChat').innerHTML='<div class="mchat-loading"><div class="spin"></div>Carregando...</div>';
+
   document.getElementById('mheadTeams').innerHTML='';
+
   fetchMatch(id,true);
+
 }
+
 function closeMatch(){
+
   document.getElementById('matchModal').classList.remove('open');
+
   document.body.style.overflow='';
+
   _mId=null; _mSeq=-1;
+
   if(_mTimer){clearInterval(_mTimer);_mTimer=null;}
+
 }
+
 function fetchMatch(id,first){
+
   fetch(ESPN_SUMMARY.replace('{ID}',id),{cache:'no-cache'})
+
     .then(function(r){return r.json();})
+
     .then(function(d){
+
       window._matchVideos=d.videos||[];
+
       renderMatchHead(d);
+
       renderVideoStrip(window._matchVideos);
+
       renderChat(d,first);
+
       var state=d.header.competitions[0].status.type.state;
+
       if(state==='in'){
+
         if(!_mTimer)_mTimer=setInterval(function(){if(_mId===id)fetchMatch(id,false);},30000);
+
       }else{
+
         if(_mTimer){clearInterval(_mTimer);_mTimer=null;}
+
       }
+
     })
+
     .catch(function(){
+
       document.getElementById('mChat').innerHTML='<div class="mchat-loading">Erro ao carregar.</div>';
+
     });
+
 }
+
+
+
 
 
 function renderVideoStrip(videos){
+
   var strip=document.getElementById('vidStrip');
+
   if(!strip)return;
+
   if(!videos||!videos.length){strip.innerHTML='';return;}
+
   strip.innerHTML=videos.slice(0,10).map(function(v,i){
+
     var dur=v.duration?Math.floor(v.duration/60)+'m'+('0'+v.duration%60).slice(-2)+'s':'';
+
     var thumb=v.thumbnail||'';
+
     var ttl=(v.headline||'Vídeo').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
     return '<div class="vid-card" onclick="playVideo('+i+')">'
+
       +(thumb?'<img class="vid-card-img" src="'+thumb+'" onerror="this.style.opacity=0" alt="">':'<div class="vid-card-img"></div>')
+
       +'<div class="vid-card-ttl">'+ttl+'</div>'
+
       +(dur?'<div class="vid-card-dur">'+dur+'</div>':'')
+
       +'</div>';
+
   }).join('');
+
 }
+
+
+
 
 
 function fmtDur(s){if(!s)return '';var m=Math.floor(s/60),sec=s%60;return m+'m'+('0'+sec).slice(-2)+'s';}
+
 function playVideo(idx){
+
   var videos=window._matchVideos||[];
+
   var v=videos[idx];
+
   if(!v)return;
+
   var src=(v.links&&v.links.source&&v.links.source.href)||'';
+
   var webUrl=(v.links&&v.links.web&&v.links.web.href)||'';
+
   var title=(v.headline||'Vídeo')+(v.duration?' · '+fmtDur(v.duration):'');
+
   document.getElementById('vidOvTitle').textContent=title;
+
   var body=document.getElementById('vidOvBody');
+
   if(src){
+
     body.innerHTML='<video src="'+src+'" autoplay controls playsinline preload="auto" style="width:100%;max-height:100%"></video>';
+
   }else if(webUrl){
+
     body.innerHTML='<div class="vid-ov-fb"><div>Vídeo disponível na ESPN:</div><a href="'+webUrl+'" target="_blank">Abrir no ESPN ▶</a></div>';
+
   }else{
+
     body.innerHTML='<div class="vid-ov-fb">Vídeo não disponível</div>';
+
   }
+
   document.getElementById('vidOverlay').classList.add('open');
+
   document.body.style.overflow='hidden';
+
 }
+
 function closeVideo(){
+
   var ov=document.getElementById('vidOverlay');
+
   ov.classList.remove('open');
+
   var vid=document.querySelector('#vidOvBody video');
+
   if(vid){vid.pause();vid.src='';}
+
   document.getElementById('vidOvBody').innerHTML='';
+
   document.body.style.overflow='';
+
 }
+
+
 
 function renderMatchHead(d){
+
   var comp=d.header.competitions[0];
+
   var home=comp.competitors.find(function(c){return c.homeAway==='home';})||comp.competitors[0];
+
   var away=comp.competitors.find(function(c){return c.homeAway==='away';})||comp.competitors[1];
+
   var st=comp.status.type;
+
   var isLive=st.state==='in',isHT=st.name==='STATUS_HALFTIME',isFT=st.completed;
+
   var clk=comp.status.displayClock||'';
+
   var stTxt=isLive?(isHT?'INTERVALO':clk+"'"):isFT?'ENCERRADO':'EM BREVE';
+
   var pillCls=isLive?' live':'';
+
   var h='<div class="mteam-blk">';
+
   if(home.team.logo)h+='<img src="'+home.team.logo+'" alt="">';
+
   h+='<span>'+home.team.displayName+'</span></div>';
+
   h+='<div class="mscore-blk"><div class="mscore-num">'+(home.score||'0')+'<span style="color:var(--muted);font-size:18px"> – </span>'+(away.score||'0')+'</div>';
+
   h+='<div class="mstatus-pill'+pillCls+'">'+stTxt+'</div></div>';
+
   h+='<div class="mteam-blk">';
+
   if(away.team.logo)h+='<img src="'+away.team.logo+'" alt="">';
+
   h+='<span>'+away.team.displayName+'</span></div>';
+
   document.getElementById('mheadTeams').innerHTML=h;
+
 }
+
+
 
 function chatClass(txt){
+
   var t=txt.toLowerCase();
+
   if(t.startsWith('gol!'))return 'cb-goal';
+
   if(t.includes('cartão amarelo'))return 'cb-yellow';
+
   if(t.includes('cartão vermelho'))return 'cb-red';
+
   if(t.startsWith('substituição'))return 'cb-sub';
+
   if(t.startsWith('finalização')||t.startsWith('tentativa'))return 'cb-attempt';
+
   return '';
+
 }
+
 function chatIcon(txt){
+
   var t=txt.toLowerCase();
+
   if(t.startsWith('gol!'))return '⚽';
+
   if(t.includes('cartão amarelo'))return '🟨';
+
   if(t.includes('cartão vermelho')||t.includes('expulsão'))return '🟥';
+
   if(t.startsWith('substituição'))return '🔄';
+
   if(t.includes('var'))return '📺';
+
   if(t.includes('impedimento'))return '🚩';
+
   if(t.includes('pênalti')||t.includes('penâlt')||t.includes('mão na bola'))return '🤚';
+
   if(t.includes('escanteio'))return '🚀';
+
   if(t.includes('falta'))return '⚠️';
+
   return '💬';
+
 }
+
 function isSep(txt){
+
   var t=txt.toLowerCase();
+
   return t.includes('1º tempo')||t.includes('2º tempo')||t.includes('segundo tempo')||
+
          t.includes('primeiro tempo')||t.includes('encerra')||t.includes('começa')||
+
          t.includes('partida encerrada')||t.includes('intervalo')||t.includes('half');
+
 }
+
+
 
 function renderChat(d,first){
+
   var chat=document.getElementById('mChat');
+
   var wasBottom=chat.scrollHeight-chat.scrollTop-chat.clientHeight<60;
+
   var items=d.commentary||[];
+
   var newItems=items.filter(function(c){return c.sequence>_mSeq;});
+
   if(!newItems.length&&!first)return;
+
   _mSeq=items.length?items[items.length-1].sequence:_mSeq;
+
   if(first) chat.innerHTML='';
+
   var _usedVids={};  // track which video indices are already assigned
+
   newItems.forEach(function(c){
+
     var time=c.time&&c.time.displayValue?c.time.displayValue:'';
+
     var txt=c.text||'';
+
     if(!txt)return;
+
     var el=document.createElement('div');
+
     if(isSep(txt)){
+
       el.className='cb-sep';
+
       el.textContent='── '+txt+' ──';
+
     } else {
+
       var cls=chatClass(txt);
+
       el.className='cb '+(cls||'');
+
       var icon=chatIcon(txt);
+
       var playBtn='';
+
       if(cls==='cb-goal'){
+
         var vids=window._matchVideos||[];
+
         if(vids.length){
+
           // Extract scorer name tokens (min 3 chars to avoid false matches)
+
           var scorerMatch=txt.match(/([A-Za-záàâãéêíóôõúüçñÁÀÂÃÉÊÍÓÔÕÚÜÇÑ][a-záàâãéêíóôõúüçñ]+(?:[\s\-][A-Za-záàâãéêíóôõúüçñÁÀÂÃÉÊÍÓÔÕÚÜÇÑ][a-záàâãéêíóôõúüçñ]+)*)\s*\(/);
+
           var tokens=[];
+
           if(scorerMatch){
+
             tokens=scorerMatch[1].trim().toLowerCase().split(/[\s\-]+/).filter(function(t){return t.length>2;});
+
           }
+
           var vi=-1;
+
           if(tokens.length){
+
             // Pass 1: unused short clip (≤120s) with name in headline
+
             for(var _i=0;_i<vids.length;_i++){
+
               if(_usedVids[_i])continue;
+
               var _v=vids[_i];
+
               var _dur=_v.duration||999;
+
               var _hl=(_v.headline||'').toLowerCase();
+
               if(_dur<=120&&tokens.some(function(t){return _hl.includes(t);})){vi=_i;break;}
+
             }
+
             // Pass 2: unused clip ≤240s with name in headline
+
             if(vi<0){
+
               for(var _i=0;_i<vids.length;_i++){
+
                 if(_usedVids[_i])continue;
+
                 var _v=vids[_i];
+
                 var _dur=_v.duration||999;
+
                 var _hl=(_v.headline||'').toLowerCase();
+
                 if(_dur<=240&&tokens.some(function(t){return _hl.includes(t);})){vi=_i;break;}
+
               }
+
             }
+
           }
+
           if(vi>=0){
+
             _usedVids[vi]=true;  // claim this video — no other goal can use it
+
             playBtn='<button class="cb-play" data-vi="'+vi+'">▶ Ver gol</button>';
+
           }
+
           // No "Highlights" fallback button — avoids misleading users with wrong video
+
         }
+
       }
+
       el.innerHTML='<div class="cb-time">'+time+'</div><div class="cb-bub">'+icon+' '+txt+(playBtn?'<br>'+playBtn:'')+'</div>';
+
     }
+
     chat.appendChild(el);
+
   });
+
   // Scroll to bottom if was at bottom or first load
+
   if(first||wasBottom){
+
     chat.scrollTop=chat.scrollHeight;
+
   }
+
 }
+
 // ─────────────────────────────────────────────────────────
 
+
+
 // Click delegation for game cards → chat modal, cb-play buttons
+
 document.addEventListener('click',function(e){
+
   var playBtn=e.target.closest('.cb-play');
+
   if(playBtn){playVideo(parseInt(playBtn.getAttribute('data-vi'),10));return;}
+
   var card=e.target.closest('[data-mid]');
+
   if(card)openMatch(card.getAttribute('data-mid'));
+
 });
 
+
+
 loadBaked();loadAll();
+
 </script>
 
+
+
 <!-- Live Chat Modal -->
+
 <div id="matchModal" class="modal" onclick="if(event.target===this)closeMatch()">
+
   <div class="msheet">
+
     <!-- Fixed Header: score + teams -->
+
     <div class="mhead">
+
       <div class="mhead-top">
+
         <div style="width:30px"></div>
+
         <div class="mhead-teams" id="mheadTeams"><!-- filled by JS --></div>
+
         <button class="mhead-close" onclick="closeMatch()">&#10005;</button>
+
       </div>
+
       <div class="vid-strip" id="vidStrip"></div>
+
     </div>
+
     <!-- Scrollable chat area -->
+
     <div class="mchat" id="mChat">
+
       <div class="mchat-loading"><div class="spin"></div>Carregando...</div>
+
     </div>
+
   </div>
+
 </div>
+
+
+
 
 
 <!-- Video Overlay -->
+
 <div id="vidOverlay" class="vid-overlay">
+
   <div class="vid-ov-hdr">
+
     <div class="vid-ov-ttl" id="vidOvTitle"></div>
+
     <button class="vid-ov-close" onclick="closeVideo()">&#10005;</button>
+
   </div>
+
   <div class="vid-ov-body" id="vidOvBody"></div>
+
 </div>
 
+
+
 </body>
+
 </html>
+
