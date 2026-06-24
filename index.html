@@ -538,6 +538,8 @@ function goP(n,tab,fromBot){
 
   else if(fromBot){document.querySelectorAll('.tab').forEach(function(t,i){t.classList.toggle('active',i===n);});}
 
+  if(n===5){if(BL&&BL.uid){renderBolao();}else{blInit();}}
+
 }
 
 function toast(msg,goal){
@@ -2051,6 +2053,7 @@ function blSetNick(){
   blLoad();
 }
 function blLoad(){
+  if(!db){renderBolao();return;}
   db.ref('bolao/palpites/'+BL.uid).on('value',function(s){
     BL.picks=s.val()||{};renderBolao();
   });
@@ -2089,6 +2092,10 @@ function blPickDeadlinePassed(g){
 }
 function renderBolao(){
   if(!BL.uid){blInit();return;}
+  if(typeof S==='undefined'||!S.M||!S.M.length){
+    document.getElementById('blContent').innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px">Carregando jogos... tente novamente em instantes.<br><br><button onclick="renderBolao()" style="background:var(--orange);color:#000;border:none;border-radius:8px;padding:10px 20px;font-weight:700;cursor:pointer">Recarregar</button></div>';
+    return;
+  }
   var sc=blCalcAndSave();
   var h='';
   // Header pessoal
